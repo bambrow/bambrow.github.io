@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hexo静态博客指南：本站是如何诞生的（下）</title>
+    <url>/20200718-hexo-blog-guide-3/</url>
+    <content><![CDATA[<p>本文详细记录一下本站的建立过程，以便查阅。对于具体的细节则不会做过多解释，主要展示步骤。这一篇主要讲述购买及绑定域名的相关操作。</p>
+<a id="more"></a>
+<h2 id="购买域名"><a class="header-anchor" href="#购买域名">¶</a>购买域名</h2>
+<p>现在我们的站点已经有模有样了，那就可以准备为它绑定一个域名了。首先第一步就是购买域名。国内国外都有众多域名服务商，本着少受一些限制的原则，推荐从国外几个知名的服务商购买。在网上可以搜到许多域名商的介绍与购买指南，这里就不赘述了。</p>
+<p>如果实在选择困难，可以去<a href="https://www.domcomp.com/" target="_blank" rel="noopener">这里</a>比较一下各家的价格。很多域名商首年或者首次转移都有优惠，如果不想每年都折腾，一定要记得对比一下续费价格，以及有没有隐藏费用。另外最好选择有WHOIS隐私保护的域名商，以及在付费的时候不要错选成那些乱七八糟的套餐，只买域名即可。</p>
+<h2 id="绑定域名并添加CNAME"><a class="header-anchor" href="#绑定域名并添加CNAME">¶</a>绑定域名并添加<code>CNAME</code></h2>
+<p>这一步主要参考了两篇文章，分别讲了使用<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>和不使用<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>DNSPod的情况，你可以视情况而定。我这里参考的是第二篇，也就是GitHub官方的指南。</p>
+<p>首先去<code>你的GitHub用户名.github.io</code>仓库中，点击Settings，在GitHub Pages的Custom domain下输入你买好的域名，点击Save保存。</p>
+<p>此时你会发现下面的Enforce HTTPS被取消勾选，为了将其再次选中，需要以下的步骤。</p>
+<p>首先配置<code>CNAME</code>，在<code>source</code>文件夹下建立一个新文件叫做<code>CNAME</code>（不要带任何后缀），将你买好的域名输入进去。随后向GitHub提交这次修改。</p>
+<p>随后，打开你的域名商网站，为你的域名配置DNS。不同的域名商可能有不太一样的步骤，你可以搜索<code>你的域名商 + connect to github pages</code>来找到教程。在一般情况下，你需要设置4个A记录与1个CNAME记录，A记录指向下面四个IP地址：</p>
+<ul>
+<li>185.199.108.153</li>
+<li>185.199.109.153</li>
+<li>185.199.110.153</li>
+<li>185.199.111.153</li>
+</ul>
+<p>CNAME记录则设置为<code>www CNAME 你的GitHub用户名.github.io</code>。详情可以参看教程里的<a href="https://docs.github.com/cn/github/working-with-github-pages/managing-a-custom-domain-for-your-github-pages-site#configuring-an-apex-domain" target="_blank" rel="noopener">设置apex域</a>部分。</p>
+<p>随后刷新GitHub的设置页，看是否可以点选Enforce HTTPS。有时候需要等一段时间才可以。你也可以在Terminal测试一下DNS是否配置正确（可能也需要等一段时间才会生效）：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ dig bambrow.com +noall +answer</span><br><span class="line"></span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; bambrow.com +noall +answer</span><br><span class="line">;; global options: +cmd</span><br><span class="line">bambrow.com.		194	IN	A	185.199.109.153</span><br><span class="line">bambrow.com.		194	IN	A	185.199.111.153</span><br><span class="line">bambrow.com.		194	IN	A	185.199.110.153</span><br><span class="line">bambrow.com.		194	IN	A	185.199.108.153</span><br></pre></td></tr></table></figure>
+<p>也可以在<code>dig</code>命令的域名前加上<code>www</code>看一下CNAME记录是否生效：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ dig www.bambrow.com +noall +answer</span><br><span class="line"></span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; www.bambrow.com +noall +answer</span><br><span class="line">;; global options: +cmd</span><br><span class="line">www.bambrow.com.	299	IN	CNAME	bambrow.github.io.</span><br><span class="line">bambrow.github.io.	3599	IN	A	185.199.109.153</span><br><span class="line">bambrow.github.io.	3599	IN	A	185.199.108.153</span><br><span class="line">bambrow.github.io.	3599	IN	A	185.199.111.153</span><br><span class="line">bambrow.github.io.	3599	IN	A	185.199.110.153</span><br></pre></td></tr></table></figure>
+<h2 id="其他设置"><a class="header-anchor" href="#其他设置">¶</a>其他设置</h2>
+<p>把<code>_config.yml</code>的<code>url</code>修改为你的新域名。如果你配置了LeanCloud，在应用中点击设置，点击安全中心，在Web安全域名把你的新域名加进去。现在基本上就大功告成了！</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p><a href="https://tding.top/archives/b48e2719.html" target="_blank" rel="noopener">https://tding.top/archives/b48e2719.html</a> <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p><a href="https://docs.github.com/cn/github/working-with-github-pages/managing-a-custom-domain-for-your-github-pages-site" target="_blank" rel="noopener">https://docs.github.com/cn/github/working-with-github-pages/managing-a-custom-domain-for-your-github-pages-site</a> <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+        <tag>Hexo</tag>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo NexT主题的字体更换</title>
+    <url>/20200718-hexo-next-font-settings/</url>
+    <content><![CDATA[<p>本文主要讲述Hexo NexT主题的字体更换，包括一些比较精细的设置。</p>
+<p>本文运行环境：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hexo: 4.2.1</span><br><span class="line">hexo-cli: 3.1.0</span><br><span class="line">NexT: 8.0.0-rc.4</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="在主题配置里更换字体"><a class="header-anchor" href="#在主题配置里更换字体">¶</a>在主题配置里更换字体</h2>
+<p>打开<code>source/_data/next.yml</code>，在里面搜索<code># Font Settings</code>，把自定义<code>font</code>打开。可以看到这里可以更改全局字体、网站标题字体、<code>h1-h6</code>字体、正文字体与代码块字体。你可以去<a href="https://fonts.google.com/" target="_blank" rel="noopener">Google字体页面</a>去选择喜欢的字体进行修改，也可以替换字号（这里的字号可以理解为比例，默认是1）。</p>
+<p>字体的<code>host</code>默认为<code>https://fonts.googleapis.com</code>，可能在某些地区访问会不太顺利。我们可以更改它为<code>https://fonts.loli.net</code>以获取更快速的访问<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>。</p>
+<h2 id="更精细的配置"><a class="header-anchor" href="#更精细的配置">¶</a>更精细的配置</h2>
+<p>主题配置里的选项可能过于少了，如果你感到不满意，想做一些更精细的配置，那就需要你学习一下CSS了。下面列举一些我更改的例子。</p>
+<h3 id="更改行内代码块样式"><a class="header-anchor" href="#更改行内代码块样式">¶</a>更改行内代码块样式</h3>
+<p>首先在<code>source/_data/next.yml</code>里搜索<code>custom_file_path</code>，打开<code>style: source/_data/styles.styl</code>功能，并新建这个文件。</p>
+<p>在<code>source/_data/styles.styl</code>里加入如下内容即可：</p>
+<figure class="highlight stylus"><figcaption><span>source/_data/styles.styl</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// inline code</span></span><br><span class="line"><span class="selector-tag">p</span> <span class="selector-tag">code</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#c71585</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#fffafa</span>;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">2px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="更改跨行代码块样式"><a class="header-anchor" href="#更改跨行代码块样式">¶</a>更改跨行代码块样式</h3>
+<p>跨行代码块分为几个部分：文件标题（如有）、代码行数与代码内容。这三者分别由<code>.highlight figcaption</code>、<code>.highlight .gutter pre</code>与<code>.highlight .code pre</code>控制。比如我把文件标题与代码行数改了一下：</p>
+<figure class="highlight stylus"><figcaption><span>source/_data/styles.styl</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// code block file name</span></span><br><span class="line"><span class="selector-class">.highlight</span> <span class="selector-tag">figcaption</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#fffafa</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#808080</span>;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="variable">$code</span>-font-family;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// code block line number</span></span><br><span class="line"><span class="selector-class">.highlight</span> <span class="selector-class">.gutter</span> pre &#123;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#dcdcdc</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的<code>$code-font-family</code>是在<code>themes/next/source/css/_variables/base.styl</code>里定义的变量，用于控制代码的字体。代码文件标题的字体默认是与正文字体一致，与代码块整体不太协调，我就改了一下。</p>
+<h3 id="中英文使用不同的默认字体"><a class="header-anchor" href="#中英文使用不同的默认字体">¶</a>中英文使用不同的默认字体</h3>
+<p>这个解决办法比较复杂。<code>source/_data/next.yml</code>的字体设置功能暂时不支持放置多个选项，仔细观察会发现这里面有一些不科学。如果想让中英文默认字体单独设置，就无法做到，原因是中文字体会包括英文字体，并造成覆盖。</p>
+<p>一个非常粗糙的做法是，在<code>global</code>处设置英文字体，然后在<code>title</code>、<code>headings</code>、<code>posts</code>处设置中文字体。但这样无法让后三者中英文默认字体不同，不是好的方案。那么怎么办呢？这就需要去看看<code>NexT</code>主题的源码了。</p>
+<p>主题内部，字体的设置都存放在<code>themes/next/source/css/_variables/base.styl</code>里，一共有这么几个变量：</p>
+<ul>
+<li><code>$font-family-chinese</code> 负责调控中文字体（但任何字体设置的优先级更高）。</li>
+<li><code>$font-family-base</code> 负责调控全局字体，主要是不被下面几类包括的文字。</li>
+<li><code>$font-family-logo</code> 负责调控网站标题的字体。</li>
+<li><code>$font-family-headings</code> 负责调控<code>h1-h6</code>的字体，包括标题与文中小标题。</li>
+<li><code>$font-family-posts</code> 负责调控正文字体。</li>
+<li><code>$font-family-monospace</code> 负责调控代码块的字体。</li>
+</ul>
+<p>要做到更改，我们可以打开<code>_config.yml</code>里面的<code>variable: source/_data/variables.styl</code>，并新建此文件，以达到覆盖变量的目的。</p>
+<p>在做这一步之前，我们先在<code>_config.yml</code>里面字体的<code>global</code>处设置一款纯英文字体，保证它的优先级比中文字体高。我在这里选择了<code>Noto Sans</code>。</p>
+<p>下一步，比如我们想给中文设置一款默认的衬线字体<code>Noto Serif SC</code>，我们可以加入这一行：</p>
+<figure class="highlight"><figcaption><span>source/_data/variables.styl</span></figcaption><table><tr><td class="code"><pre><span class="line">$font-family-chinese = "Noto Serif SC", "PingFang SC", "Microsoft YaHei";</span><br></pre></td></tr></table></figure>
+<p>这样是不是大功告成了呢？本地看一下，发现并未改动。为什么呢？试了一下发现原来只重新定义<code>$font-family-chinese</code>不够，必须把剩下的字体再重新定义一下才可以。我们可以把剩下的字体变量都复制过来：</p>
+<figure class="highlight"><figcaption><span>source/_data/variables.styl</span></figcaption><table><tr><td class="code"><pre><span class="line">$font-family-chinese = "Noto Serif SC", "PingFang SC", "Microsoft YaHei";</span><br><span class="line"></span><br><span class="line">$font-family-base = $font-family-chinese, sans-serif;</span><br><span class="line">$font-family-base = get_font_family('global'), $font-family-chinese, sans-serif if get_font_family('global');</span><br><span class="line"></span><br><span class="line">$font-family-logo = $font-family-base;</span><br><span class="line">$font-family-logo = get_font_family('title'), $font-family-base if get_font_family('title');</span><br><span class="line"></span><br><span class="line">$font-family-headings = $font-family-base;</span><br><span class="line">$font-family-headings = get_font_family('headings'), $font-family-base if get_font_family('headings');</span><br><span class="line"></span><br><span class="line">$font-family-posts = $font-family-base;</span><br><span class="line">$font-family-posts = get_font_family('posts'), $font-family-base if get_font_family('posts');</span><br><span class="line"></span><br><span class="line">$font-family-monospace = consolas, Menlo, monospace, $font-family-chinese;</span><br><span class="line">$font-family-monospace = get_font_family('codes'), consolas, Menlo, monospace, $font-family-chinese if get_font_family('codes');</span><br></pre></td></tr></table></figure>
+<p>这样就没问题了，成功实现中英文默认字体不同。但如果你需要一些更精细的设置，那就需要多研究研究这几个变量了。</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>参考网页：<a href="https://sb.sb/blog/css-cdn/" target="_blank" rel="noopener">https://sb.sb/blog/css-cdn/</a> <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+        <tag>Hexo</tag>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo NexT更多功能设置</title>
+    <url>/20200719-hexo-next-new-features/</url>
+    <content><![CDATA[<p>本文继续讲述我是怎么持续折腾我的Hexo静态博客的。本文的主要内容有站点分析、站点地图、相关文章、设置圆角与简繁转换。</p>
+<p>本文运行环境：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm: 6.14.7</span><br><span class="line">hexo: 4.2.1</span><br><span class="line">hexo-cli: 3.1.0</span><br><span class="line">NexT: 8.0.0-rc.4</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="站点分析"><a class="header-anchor" href="#站点分析">¶</a>站点分析</h2>
+<h3 id="Google-Analytics"><a class="header-anchor" href="#Google-Analytics">¶</a>Google Analytics</h3>
+<p>参考<a href="https://theme-next.js.org/docs/third-party-services/statistics-and-analytics.html#Google-Analytics" target="_blank" rel="noopener">官方指南</a>，首先去<a href="https://analytics.google.com/" target="_blank" rel="noopener">Google Analytics</a>建立一个账号，随后就可以得到UA开头的跟踪ID，填入<code>source/_data/next.yml</code>里<code>google_analytics</code>的<code>tracking_id</code>即可。</p>
+<h3 id="Baidu-Analytics（百度统计）"><a class="header-anchor" href="#Baidu-Analytics（百度统计）">¶</a>Baidu Analytics（百度统计）</h3>
+<p>参考<a href="https://theme-next.js.org/docs/third-party-services/statistics-and-analytics.html#Baidu-Analytics-China" target="_blank" rel="noopener">官方指南</a>，首先去<a href="https://tongji.baidu.com/web/welcome/login" target="_blank" rel="noopener">百度统计</a>，新增一个网站，复制统计代码中的<code>hm.src = &quot;https://hm.baidu.com/hm.js?[这里的数据]&quot;</code>，填入<code>source/_data/next.yml</code>里<code>baidu_analytics</code>即可。</p>
+<h2 id="站点地图与搜索引擎优化"><a class="header-anchor" href="#站点地图与搜索引擎优化">¶</a>站点地图与搜索引擎优化</h2>
+<p>这部分参考了<a href="https://tding.top/archives/4ea54752.html" target="_blank" rel="noopener">这篇文章</a>与<a href="https://fanandjiu.com/Hexo%E9%97%AE%E9%A2%98-%E6%8F%90%E4%BA%A4%E7%AB%99%E7%82%B9%E7%BB%99%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E4%BB%A5%E5%8F%8ASEO/" target="_blank" rel="noopener">这篇文章</a>。</p>
+<h3 id="Google站点地图"><a class="header-anchor" href="#Google站点地图">¶</a>Google站点地图</h3>
+<p>首先运行（别忘了同时加入到GitHub工作流）：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-generator-sitemap</span><br></pre></td></tr></table></figure>
+<p>在<code>_config.yml</code>加入：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">sitemap:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">sitemap.xml</span></span><br></pre></td></tr></table></figure>
+<p>随后打开<a href="https://www.google.com/webmasters" target="_blank" rel="noopener">Google网站站长</a>，输入自己的站点之后进行验证（去自己的域名商加一条TXT记录即可）。也可以通过在<code>source/_data/next.yml</code>的<code>google_site_verification</code>写入验证代码后缀来完成验证。等待一段时间验证通过后，提交站点地图即可，后缀为<code>sitemap.xml</code>。</p>
+<h3 id="百度站点地图"><a class="header-anchor" href="#百度站点地图">¶</a>百度站点地图</h3>
+<p>事先说明，GitHub是不允许百度爬取的，所以如果要用这个功能，你需要把网站换一个地方部署。</p>
+<p>如果要做的话，首先运行（别忘了同时加入到GitHub工作流）：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-generator-baidu-sitemap</span><br></pre></td></tr></table></figure>
+<p>在<code>_config.yml</code>加入：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">baidusitemap:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">baidusitemap.xml</span></span><br></pre></td></tr></table></figure>
+<p>随后打开<a href="https://ziyuan.baidu.com/site/index" target="_blank" rel="noopener">百度资源搜索平台</a>，添加你的网站，你可以采用CNAME验证方式，也可以通过在<code>source/_data/next.yml</code>的<code>baidu_site_verification</code>写入验证代码前缀来完成验证。随后便可以提交站点地图，你也可以安装插件设置自动提交，详情见上面的两篇文章。</p>
+<h3 id="必应站点地图"><a class="header-anchor" href="#必应站点地图">¶</a>必应站点地图</h3>
+<p>在Google站点地图的基础上，打开<a href="https://www.bing.com/toolbox/webmaster/" target="_blank" rel="noopener">Bing网站管理员工具</a>，你可以直接用Google Search Console验证，也可以手动验证，Bing提供了三种验证方式。你也可以把验证代码粘贴到<code>source/_data/next.yml</code>的<code>bing_site_verification</code>处。随后便可以提交站点地图。</p>
+<h3 id="配置robots-txt"><a class="header-anchor" href="#配置robots-txt">¶</a>配置<code>robots.txt</code></h3>
+<p>存放在<code>source</code>目录下。它告诉搜索引擎哪些内容可以被爬取，哪些不可以。内容你可以自行决定，因为每个人的网站结构都有一些不同。</p>
+<p>我目前使用的内容如下：</p>
+<figure class="highlight plain"><figcaption><span>robots.txt</span></figcaption><table><tr><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Allow: &#x2F;</span><br><span class="line">Allow: &#x2F;about&#x2F;</span><br><span class="line">Allow: &#x2F;archives&#x2F;</span><br><span class="line">Allow: &#x2F;categories&#x2F;</span><br><span class="line">Allow: &#x2F;tags&#x2F;</span><br><span class="line">Disallow: &#x2F;css&#x2F;</span><br><span class="line">Disallow: &#x2F;fonts&#x2F;</span><br><span class="line">Disallow: &#x2F;images&#x2F;</span><br><span class="line">Disallow: &#x2F;js&#x2F;</span><br><span class="line">Disallow: &#x2F;lib&#x2F;</span><br></pre></td></tr></table></figure>
+<h3 id="缩减URL层级"><a class="header-anchor" href="#缩减URL层级">¶</a>缩减URL层级</h3>
+<p>URL层级太深对搜索引擎也不友好。我们可以修改<code>_config.yml</code>里的<code># URL</code>部分：</p>
+<figure class="highlight diff"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="deletion">- permalink: :year/:month/:day/:title/</span></span><br><span class="line"><span class="addition">+ permalink: :title/</span></span><br></pre></td></tr></table></figure>
+<p>这样就把原来的四层改为了一层。</p>
+<p>注意，这样更改并部署之后，如果你配置了LeanCloud，那么原来的计数和留言会清零。你需要去LeanCloud后台存储菜单的结构化数据里更改一下Comment和Counter的URL，把它们映射到新的URL上面。</p>
+<h2 id="相关文章推荐"><a class="header-anchor" href="#相关文章推荐">¶</a>相关文章推荐</h2>
+<p>参考<a href="https://github.com/tea3/hexo-related-popular-posts" target="_blank" rel="noopener">插件主页</a>，首先运行以下命令（别忘了同时加入到GitHub工作流）：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-related-popular-posts</span><br></pre></td></tr></table></figure>
+<p>随后在<code>source/_data/next.yml</code>中开启<code>related_posts</code>即可。我自己在<code>source/_data/styles.styl</code>做了一些式样调整：</p>
+<figure class="highlight stylus"><figcaption><span>source/_data/styles.styl</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// popular posts header</span></span><br><span class="line"><span class="selector-class">.popular-posts-header</span> &#123;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#f5f5f5</span>;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="variable">$font</span>-family-posts;</span><br><span class="line">    <span class="attribute">font-weight</span>: bold;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">110%</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// popular posts</span></span><br><span class="line"><span class="selector-class">.popular-posts</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">110%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="设置圆角"><a class="header-anchor" href="#设置圆角">¶</a>设置圆角</h2>
+<figure class="highlight"><figcaption><span>source/_data/variables.styl</span></figcaption><table><tr><td class="code"><pre><span class="line">$border-radius-inner = 20px 20px 20px 20px;</span><br><span class="line">$border-radius = 20px;</span><br></pre></td></tr></table></figure>
+<figure class="highlight stylus"><figcaption><span>source/_data/styles.styl</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// sidebar</span></span><br><span class="line"><span class="selector-class">.sidebar</span> &#123;</span><br><span class="line">    <span class="attribute">box-shadow</span>: none;</span><br><span class="line">    <span class="attribute">background</span>: none;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="设置简繁转换"><a class="header-anchor" href="#设置简繁转换">¶</a>设置简繁转换</h2>
+<p>这部分参考了<a href="https://tding.top/archives/3cdfe265.html" target="_blank" rel="noopener">这篇文章</a>，也参考了<a href="https://tding.top/archives/2bd6d82.html" target="_blank" rel="noopener">这篇文章</a>的一部分。</p>
+<p>首先还是下载<a href="https://bambrow.github.io/js/tw_cn.js" target="_blank" rel="noopener">这份文件</a>，并存入<code>source/js/tw_cn.js</code>。随后在<code>source/_data/next.yml</code>里开启<code>footer: source/_data/footer.njk</code>，并新建此文件。随后将要添加的模板代码添加到这里即可。</p>
+<p>在我的使用场景下，我做了一点点小改进，把简繁转换放在了标题下方。要实现这个功能，需要开启的就不是<code>footer.njk</code>，而是<code>postMeta: source/_data/post-meta.njk</code>，并新建此文件。</p>
+<p>随后在文件中写入（为了节省空间，也对显示文字做了少许修改）：</p>
+<figure class="highlight javascript"><figcaption><span>source/_data/post-meta.njk</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">"post-meta-item"</span>&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">"post-meta-item-icon"</span>&gt;</span><br><span class="line">        &lt;i <span class="class"><span class="keyword">class</span></span>=<span class="string">"far fa-file-word"</span>&gt;&lt;<span class="regexp">/i&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>span&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">"post-meta-item-text"</span>&gt;</span><br><span class="line">        繁/简：</span><br><span class="line">    &lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">    &lt;a id="translateLink" href="javascript:translatePage();"&gt;</span></span><br><span class="line"><span class="regexp">        &lt;span class="translate-style"&gt;</span></span><br><span class="line"><span class="regexp">            繁</span></span><br><span class="line"><span class="regexp">        &lt;/</span>span&gt;</span><br><span class="line">    &lt;<span class="regexp">/a&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>span&gt;</span><br><span class="line">&lt;script type=<span class="string">"text/javascript"</span> src=<span class="string">"/js/tw_cn.js"</span>&gt;&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;script type="text/</span>javascript<span class="string">"&gt;</span></span><br><span class="line"><span class="string">    var defaultEncoding = 2; //网站编写字体是否繁体，1-繁体，2-简体</span></span><br><span class="line"><span class="string">    var translateDelay = 0; //延迟时间,若不在前, 要设定延迟翻译时间, 如100表示100ms,默认为0</span></span><br><span class="line"><span class="string">    var cookieDomain = "</span>https:<span class="comment">//bambrow.com/"; //Cookie地址, 一定要设定, 通常为你的网址</span></span><br><span class="line">    <span class="keyword">var</span> msgToTraditionalChinese = <span class="string">"繁"</span>; <span class="comment">//此处可以更改为你想要显示的文字</span></span><br><span class="line">    <span class="keyword">var</span> msgToSimplifiedChinese = <span class="string">"简"</span>; <span class="comment">//同上，但两处均不建议更改</span></span><br><span class="line">    <span class="keyword">var</span> translateButtonId = <span class="string">"translateLink"</span>; <span class="comment">//默认互换id</span></span><br><span class="line">    translateInitilization();</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>重新部署页面，就可以看到简繁转换在标题下方了，比在页面底部方便一些。</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+        <tag>Hexo</tag>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo静态博客添加可折叠内容</title>
+    <url>/20200726-hexo-blog-toggles/</url>
+    <content><![CDATA[<p>本文简要介绍了如何在Hexo静态博客里添加可折叠内容。网上的资料大多不适用于目前的最新情况，因此简单记录一下。</p>
+<p>本文运行环境：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hexo: 4.2.1</span><br><span class="line">hexo-cli: 3.1.0</span><br><span class="line">NexT: 8.0.0-rc.4</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>本文主要参考了<a href="https://tding.top/archives/bd4d996d.html" target="_blank" rel="noopener">这篇文章</a>与<a href="https://tding.top/archives/2bd6d82.html" target="_blank" rel="noopener">这篇文章</a>，并因版本更新与个人偏好做了一些改动。</p>
+<h2 id="使用方法与效果展示"><a class="header-anchor" href="#使用方法与效果展示">¶</a>使用方法与效果展示</h2>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;% fold 我是可折叠内容 %&#125;</span><br><span class="line">你看到了隐藏起来的我！</span><br><span class="line">&#123;% endfold %&#125;</span><br></pre></td></tr></table></figure>
+<div><div class="fold_hider"><div class="close hider_title">我是可折叠内容</p>
+</div></div><div class="fold">
+<p>你看到了隐藏起来的我！</p>
+
+</div></div>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;% fold 我是带有&#96;行内代码块&#96;的可折叠内容 %&#125;</span><br><span class="line">你又看到了隐藏起来的我！</span><br><span class="line">&#123;% endfold %&#125;</span><br></pre></td></tr></table></figure>
+<div><div class="fold_hider"><div class="close hider_title">我是带有<code>行内代码块</code>的可折叠内容</p>
+</div></div><div class="fold">
+<p>你又看到了隐藏起来的我！</p>
+
+</div></div>
+<h2 id="添加自定义标签"><a class="header-anchor" href="#添加自定义标签">¶</a>添加自定义标签</h2>
+<p>首先在博客根目录新建文件<code>scripts/tags/fold_tag.js</code>（如果没有文件夹就依次新建），加入以下内容：</p>
+<figure class="highlight javascript"><figcaption><span>scripts/tags/fold_tag.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/* global hexo */</span></span><br><span class="line"><span class="comment">// Usage: &#123;% fold Title %&#125; Something &#123;% endfold %&#125;</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fold</span>(<span class="params">args, content</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> text = args[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">if</span>(!text) text = <span class="string">"点击显示/隐藏"</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'&lt;div&gt;&lt;div class="fold_hider"&gt;&lt;div class="close hider_title"&gt;'</span></span><br><span class="line">    + hexo.render.renderSync(&#123;<span class="attr">text</span>: text, <span class="attr">engine</span>: <span class="string">'markdown'</span>&#125;).replace(<span class="regexp">/^&lt;p&gt;/</span>, <span class="string">''</span>).replace(<span class="regexp">/&lt;\/p&gt;$/</span>, <span class="string">''</span>)</span><br><span class="line">    + <span class="string">'&lt;/div&gt;&lt;/div&gt;&lt;div class="fold"&gt;\n'</span></span><br><span class="line">    + hexo.render.renderSync(&#123;<span class="attr">text</span>: content, <span class="attr">engine</span>: <span class="string">'markdown'</span>&#125;)</span><br><span class="line">    + <span class="string">'\n&lt;/div&gt;&lt;/div&gt;'</span>;</span><br><span class="line">&#125;</span><br><span class="line">hexo.extend.tag.register(<span class="string">'fold'</span>, fold, &#123;<span class="attr">ends</span>: <span class="literal">true</span>&#125;);</span><br></pre></td></tr></table></figure>
+<p>在这里我同时选择了渲染可折叠内容的标题和正文，这样标题内部也可以加入行内代码块。因为渲染后的内容都会被Hexo加入<code>&lt;p&gt;&lt;/p&gt;</code>标签，造成标题出现分行，所以手动去除了它们。</p>
+<h2 id="添加折叠文本的执行代码"><a class="header-anchor" href="#添加折叠文本的执行代码">¶</a>添加折叠文本的执行代码</h2>
+<p>新建<code>source/js/fold_action.js</code>文件，加入如下内容：</p>
+<figure class="highlight javascript"><figcaption><span>source/js/fold_action.js</span></figcaption><table><tr><td class="code"><pre><span class="line">$(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    $(<span class="built_in">document</span>).on(<span class="string">'click'</span>, <span class="string">'.fold_hider'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        $(<span class="string">'&gt;.fold'</span>, <span class="keyword">this</span>.parentNode).slideToggle();</span><br><span class="line">        $(<span class="string">'&gt;:first'</span>, <span class="keyword">this</span>).toggleClass(<span class="string">'open'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">//默认情况下折叠</span></span><br><span class="line">    $(<span class="string">"div.fold"</span>).css(<span class="string">"display"</span>, <span class="string">"none"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="修改自定义文件"><a class="header-anchor" href="#修改自定义文件">¶</a>修改自定义文件</h2>
+<p>首先在<code>source/_data/next.yml</code>里的<code>custom_file_path</code>下面打开<code>bodyEnd</code>。随后新建文件<code>source/_data/body-end.njk</code>，写入如下内容：</p>
+<figure class="highlight plain"><figcaption><span>source/_data/body-end.njk</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;# 引入jQuery #&#125;</span><br><span class="line">&lt;script src&#x3D;&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;jquery&#x2F;dist&#x2F;jquery.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">&#123;# 代码压缩 #&#125;</span><br><span class="line">&lt;script type&#x3D;&quot;text&#x2F;javascript&quot; src&#x3D;&quot;&#x2F;js&#x2F;fold_action.js&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="修改样式"><a class="header-anchor" href="#修改样式">¶</a>修改样式</h2>
+<p>在<code>source/_data/styles.styl</code>加入如下内容：</p>
+<figure class="highlight stylus"><figcaption><span>source/_data/styles.styl</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// toggle hider title</span></span><br><span class="line"><span class="selector-class">.hider_title</span> &#123;</span><br><span class="line">    <span class="attribute">cursor</span>: pointer;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#eeeeee</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// toggle indicators</span></span><br><span class="line"><span class="selector-class">.close</span>:before &#123;</span><br><span class="line">    padding-left: .5em;</span><br><span class="line">    padding-right: .5em;</span><br><span class="line">    <span class="attribute">content</span>: <span class="string">"▼"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.open</span>:before &#123;</span><br><span class="line">    padding-left: .5em;</span><br><span class="line">    padding-right: .5em;</span><br><span class="line">    <span class="attribute">content</span>: <span class="string">"▲"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时修改一下<code>p code</code>的样式：</p>
+<figure class="highlight diff"><figcaption><span>source/_data/styles.styl</span></figcaption><table><tr><td class="code"><pre><span class="line">// inline code</span><br><span class="line"><span class="deletion">- p code &#123;</span></span><br><span class="line"><span class="addition">+ p code, .hider_title code &#123;</span></span><br><span class="line">    color: #c71585;</span><br><span class="line">    background: #fffafa;</span><br><span class="line">    margin: 2px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就可以在文章中正常使用了。</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+        <tag>Hexo</tag>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux的crontab用法简介</title>
+    <url>/20200801-crontab-intro/</url>
+    <content><![CDATA[<p>本文简要介绍Linux中的定期执行程序<code>crontab</code>命令。</p>
+<a id="more"></a>
+<h2 id="语法介绍"><a class="header-anchor" href="#语法介绍">¶</a>语法介绍</h2>
+<p><code>crontab</code>的语法如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">usage: crontab [-u user] file</span><br><span class="line">       crontab [-u user] &#123; -e | -l | -r &#125;</span><br></pre></td></tr></table></figure>
+<p>其中<code>-u</code>可以让你设定某个用户的定期执行日程。其余三个选项的作用为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 列出目前的crontab日程</span></span><br><span class="line">crontab -l</span><br><span class="line"><span class="comment"># 使用系统的文本编辑器来打开crontab日程表，可进行增删改</span></span><br><span class="line">crontab -e</span><br><span class="line"><span class="comment"># 删除目前的crontab日程</span></span><br><span class="line">crontab -r</span><br></pre></td></tr></table></figure>
+<h2 id="新建crontab任务"><a class="header-anchor" href="#新建crontab任务">¶</a>新建<code>crontab</code>任务</h2>
+<p>除了使用<code>crontab</code>命令来新建任务之外，一般可以使用如下格式：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># crontab format</span></span><br><span class="line">[MIN] [HOUR] [DOM] [MON] [DOW] [CMD]</span><br></pre></td></tr></table></figure>
+<p>对于以上<code>crontab</code>格式的解释如下：</p>
+<ul>
+<li><code>[MIN]</code>代表分钟，可以取0-59。</li>
+<li><code>[HOUR]</code>代表小时，可以取0-23。</li>
+<li><code>[DOM]</code>代表日期，可以取1-31。</li>
+<li><code>[MON]</code>代表月份，可以取1-12（或者JAN-DEC）。</li>
+<li><code>[DOW]</code>代表星期几，可以取0-6（或者SUN-SAT；一般用0代表周日，但有时候也可以用7来代表周日）。</li>
+<li><code>[CMD]</code>代表最后需要定期运行的命令。</li>
+</ul>
+<p>此外还有几种特殊符号：</p>
+<ul>
+<li><code>*</code>代表任意值，比如在日期处输入<code>*</code>就代表每日都要执行一次。</li>
+<li><code>/</code>代表间隔值，比如在分钟处输入<code>*/5</code>就代表每5分钟就要执行一次。</li>
+<li><code>-</code>代表时间段，比如在分钟处输入<code>0-19</code>就代表0-19分钟里每分钟都要执行一次。</li>
+<li><code>,</code>代表分隔，比如在分钟处输入<code>3,5</code>就代表在当分钟在3分和5分时各执行一次。</li>
+</ul>
+<p>以上还可以任意组合，例如：</p>
+<ul>
+<li><code>1-10/2,15</code>在分钟处表示在1-10分钟内每两分钟执行一次，并且15分钟时单独执行一次。</li>
+<li><code>*/6,15</code>在分钟处表示每6分钟执行一次，并且15分钟时单独执行一次。</li>
+</ul>
+<p>此外，还有一些特殊关键字可以代替<code>[MIN] [HOUR] [DOM] [MON] [DOW]</code>：</p>
+<ul>
+<li><code>@yearly</code>或<code>@annually</code>表示<code>0 0 1 1 *</code>，即每年1月1日的00:00执行。</li>
+<li><code>@monthly</code>表示<code>0 0 1 * *</code>，即每月1日的00:00执行。</li>
+<li><code>@weekly</code>表示<code>0 0 * * 0</code>，即每周日00:00执行。</li>
+<li><code>@daily</code>表示<code>0 0 * * *</code>，即每天00:00执行。</li>
+<li><code>@hourly</code>表示<code>0 * * * *</code>，即每小时0分执行。</li>
+<li><code>@reboot</code>代表开机时执行。</li>
+</ul>
+<h2 id="应用举例"><a class="header-anchor" href="#应用举例">¶</a>应用举例</h2>
+<p><strong>1) 每分钟打印一次<code>meow</code>：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">* * * * * <span class="built_in">echo</span> <span class="string">"meow"</span></span><br></pre></td></tr></table></figure>
+<p>这里的「每分钟」是指：每年每个月每天每小时的每分钟，所以用了5个<code>*</code>。</p>
+<p>如要在每日零点的每分钟，则可以使用<code>* 0 * * *</code>。每月第一天的零点的每分钟，可以使用<code>* 0 1 * *</code>。</p>
+<p><strong>2) 每天00:00执行一次<code>ls</code>：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0 0 * * * ls</span><br><span class="line"><span class="comment"># alternative</span></span><br><span class="line">@daily ls</span><br></pre></td></tr></table></figure>
+<p><strong>3) 更多举例：</strong><br>
+接下来的例子只举例时间，不举例具体命令：</p>
+<ul>
+<li><code>5 0 * 8 *</code>：每年8月份的00:05。</li>
+<li><code>0 22 * * 1-5</code>：每周一到周五的22:00。</li>
+<li><code>23 0-20/2 * * *</code>：每天0-20时中，每两小时的23分。</li>
+<li><code>0 0,12 1 */2 *</code>：每两个月的第一天中的00:00与12:00。</li>
+</ul>
+<p>推荐一个网站：<a href="https://crontab.guru/" target="_blank" rel="noopener">crontab guru</a>。在这里你可以测试你的<code>crontab</code>日程是否符合预期。</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+        <tag>Linux</tag>
+        <tag>Shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo静态博客指南：本站是如何诞生的（上）</title>
+    <url>/20200715-hexo-blog-guide-1/</url>
+    <content><![CDATA[<p>本文详细记录一下本站的建立过程，以便查阅。对于具体的细节则不会做过多解释，主要展示步骤。这一篇主要讲述准备工作、首次部署与自动部署的相关内容。</p>
+<p>本文运行环境：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">node: v14.4.0</span><br><span class="line">npm: 6.14.7</span><br><span class="line">hexo: 4.2.1</span><br><span class="line">hexo-cli: 3.1.0</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="准备工作"><a class="header-anchor" href="#准备工作">¶</a>准备工作</h2>
+<p>准备工作主要参考了<a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">Hexo官方文档</a>。</p>
+<h3 id="安装Git与Node-js"><a class="header-anchor" href="#安装Git与Node-js">¶</a>安装Git与Node.js</h3>
+<p>在Mac上最方便的方法当然是通过<a href="https://brew.sh/" target="_blank" rel="noopener">Homebrew</a>。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/bin/bash -c <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)</span>"</span></span><br></pre></td></tr></table></figure>
+<p>注意，可能在安装之前需要先安装Command Line Tools for Xcode。直接在终端输入<code>xcode-select --install</code>安装。</p>
+<p>安装好Homebrew后，直接使用以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">brew install git</span><br><span class="line">brew install node</span><br></pre></td></tr></table></figure>
+<p>在安装以上两个依赖之前，可以先运行<code>brew update</code>来更新Homebrew。此外，还可以运行<code>brew doctor</code>检查一下有没有什么冲突，可以及时处理。也可以把以下语句加入你的<code>.bash_profile</code>或者<code>.zshrc</code>，取决于你使用的shell：</p>
+<figure class="highlight bash"><figcaption><span>.bash_profile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">"/usr/local/bin:<span class="variable">$PATH</span>"</span></span><br></pre></td></tr></table></figure>
+<p>安装好后，可以用以下命令查看是否安装成功，成功则会返回版本号：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git --version</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+<h3 id="安装Hexo"><a class="header-anchor" href="#安装Hexo">¶</a>安装Hexo</h3>
+<p>直接使用<code>npm</code>安装：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+<p>查看一下<code>hexo</code>是否安装成功，会返回当前的<code>hexo</code>版本号：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
+<h3 id="注册GitHub并新建个人仓库"><a class="header-anchor" href="#注册GitHub并新建个人仓库">¶</a>注册GitHub并新建个人仓库</h3>
+<p><a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>就不用多说了。注册完成后，新建公有仓库，名称为<code>你的GitHub用户名.github.io</code>，比如我的就叫做<code>bambrow.github.io</code>。这个仓库用来存放渲染好的页面。</p>
+<p>此外，我们再新建一个私有仓库，用来存放源文件本身。仓库的名字任意取，我取的名字是<code>blog</code>。</p>
+<p>这两个仓库最好不要初始化任何东西，也就是<code>README</code>，<code>.gitignore</code>和<code>license</code>都不要。这样新建的仓库完全是空的。</p>
+<h3 id="设置Git与密钥文件"><a class="header-anchor" href="#设置Git与密钥文件">¶</a>设置Git与密钥文件</h3>
+<p>首先运行以下两句进行Git配置：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">"GitHub用户名"</span></span><br><span class="line">git config --global user.email <span class="string">"GitHub注册邮箱"</span></span><br></pre></td></tr></table></figure>
+<p>其中把用户名和邮箱替换成你自己的。然后我们生成密钥文件：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">"GitHub注册邮箱"</span></span><br></pre></td></tr></table></figure>
+<p>直接一路回车下去就好，结束后会在<code>~/.ssh/</code>文件夹里生成<code>id_rsa</code>私钥文件与<code>id_rsa.pub</code>公钥文件。我们读取一下公钥的内容并且手动拷贝：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+<p>手动复制显示的内容。随后打开<a href="https://github.com/settings/keys" target="_blank" rel="noopener">这个页面</a>设置SSH Key。你也可以在GitHub主页点击你的右上角头像，选择Settings，然后选择SSH and GPG Keys找到这个界面。点击New SSH Key，标题可以随便写，内容就是你刚才复制的公钥内容，随后保存。</p>
+<h2 id="开始建站"><a class="header-anchor" href="#开始建站">¶</a>开始建站</h2>
+<h3 id="博客初始化"><a class="header-anchor" href="#博客初始化">¶</a>博客初始化</h3>
+<p>首先选择一个你喜欢的地方作为你的博客根目录。我自己选择了与<code>bambrow.github.io</code>的同名目录。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir ~/git/bambrow.github.io</span><br></pre></td></tr></table></figure>
+<p>随后按照<a href="https://hexo.io/zh-cn/docs/setup" target="_blank" rel="noopener">官方教程</a>，依次运行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo init ~/git/bambrow.github.io</span><br><span class="line"><span class="built_in">cd</span> ~/git/bambrow.github.io</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<p>现在博客已经初始化完成了。使用以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo server</span><br></pre></td></tr></table></figure>
+<p>就可以在<a href="http://localhost:4000" target="_blank" rel="noopener">http://localhost:4000</a>看到你的站点了。可以在终端里使用<code>control+c</code>关掉本地服务器。下面列举一些常用的命令，更多命令与参数可以参考<a href="https://hexo.io/zh-cn/docs/commands" target="_blank" rel="noopener">这里</a>：</p>
+<ul>
+<li><code>hexo clean</code> 用于清除缓存与静态文件。</li>
+<li><code>hexo new &quot;文章标题&quot;</code> 用于新建文章。</li>
+<li><code>hexo server</code> 用于启动本地服务器查看渲染好的网页，可简写为<code>hexo s</code>。</li>
+<li><code>hexo generate</code> 用于生成静态文件，可简写为<code>hexo g</code>。</li>
+<li><code>hexo deploy</code> 用于部署网站，需要先设置好<code>_config.yml</code>，可简写为<code>hexo d</code>。</li>
+</ul>
+<h3 id="设置-config-yml"><a class="header-anchor" href="#设置-config-yml">¶</a>设置<code>_config.yml</code></h3>
+<p>首先，可以参考官方的<a href="https://hexo.io/zh-cn/docs/configuration" target="_blank" rel="noopener">设置页面</a>，这里只涉及一些核心设置。</p>
+<p>用你喜欢的编辑器<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>打开根目录下的<code>_config.yml</code>（注意不是<code>themes</code>文件夹里面的<code>_config.yml</code>）。</p>
+<p>在<code>Site</code>下面你可以更改网页的标题、副标题、描述、作者、语言、时区等等。语言这里选择<code>zh-CN</code>。在<code>URL</code>下面可以把<code>url</code>改为你的GitHub Pages的URL，<code>https://你的GitHub用户名.github.io</code>。中间的大部分设置跳过，你也可以参照上面的网页进行修改。</p>
+<p>最后，我们重点关注一下<code># Deployment</code>。在这里，我们需要把它改为如下的样式：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">你的GitHub目录地址</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+<p>其中<code>repo</code>要根据自己的情况修改。你可以在GitHub主页点击你的头像，选择Your repositories，点击你的<code>你的GitHub用户名.github.io</code>仓库，点击Code按钮，然后点击Use SSH（如果目前显示为Clone with HTTPS），然后复制框中的内容到这里。</p>
+<p>修改好后，保存文件。</p>
+<h3 id="首次部署"><a class="header-anchor" href="#首次部署">¶</a>首次部署</h3>
+<p>我们需要再安装一个依赖：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+<p>随后一切就绪，依次运行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+<p>然后你就可以在<code>https://你的GitHub用户名.github.io</code>看到渲染好的网页了。</p>
+<h2 id="设置自动部署"><a class="header-anchor" href="#设置自动部署">¶</a>设置自动部署</h2>
+<p>在这一步里我们不仅备份了博客的源文件，也实现了修改push到<code>blog</code>私有仓库后触发GitHub Actions完成自动部署。</p>
+<h3 id="将源文件备份至私有仓库"><a class="header-anchor" href="#将源文件备份至私有仓库">¶</a>将源文件备份至私有仓库</h3>
+<p>在终端，自己的<code>GitHub用户名.github.io</code>文件夹内，手动添加远程仓库：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br><span class="line">git remote add origin git@github.com:bambrow/blog.git</span><br></pre></td></tr></table></figure>
+<p>这里的远程仓库就是你的<code>blog</code>仓库。把上面的<code>git@github.com:bambrow/blog.git</code>修改成你自己的仓库地址。方法同样是在网页进入<code>blog</code>仓库，点击Code按钮，然后点击Use SSH（如果目前显示为Clone with HTTPS），然后复制框中的内容到这里。</p>
+<p>随后我们编辑一下<code>.gitignore</code>文件。可以使用你喜欢的编辑器。一般来讲，<code>.gitignore</code>应该有如下内容：</p>
+<figure class="highlight plain"><figcaption><span>.gitignore</span></figcaption><table><tr><td class="code"><pre><span class="line">.DS_Store</span><br><span class="line">Thumbs.db</span><br><span class="line">db.json</span><br><span class="line">*.log</span><br><span class="line">node_modules&#x2F;</span><br><span class="line">public&#x2F;</span><br><span class="line">.deploy*&#x2F;</span><br></pre></td></tr></table></figure>
+<p>编辑好之后，先做：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull origin master</span><br></pre></td></tr></table></figure>
+<p>随后把所有应该备份的文件push到GitHub：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"initial commit"</span></span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<p>此时去GitHub上查看<code>blog</code>仓库，会发现内容已经更新。</p>
+<h3 id="设置GitHub-Actions"><a class="header-anchor" href="#设置GitHub-Actions">¶</a>设置GitHub Actions</h3>
+<p>请注意，在做这一步之前，请务必确认自己的<code>blog</code>仓库是私有仓库，如果不是，一定要在设置里将其设置为私有。</p>
+<p>之前建立好的密钥文件，有公钥也有私钥。我们已经用过了公钥，这次使用私钥。首先读取其内容并手动拷贝：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<p>手动复制全部内容。随后在网页上打开自己的<code>blog</code>仓库，点击Settings，再点击左侧的Secrets，随后新建。名称可以随意写，这里推荐<code>HEXO_DEPLOY_KEY</code>；内容则是刚才复制的私钥全部内容。随后点击添加。</p>
+<p>随后，我们开始设置工作流。点击你的仓库标签下的Actions，选择新建New workflow。随后选择set up a workflow yourself，将<code>main.yml</code>的内容替换如下，你也可以自行修改：</p>
+<figure class="highlight yaml"><figcaption><span>.github/workflows/main.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># 工作流名称</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">Hexo</span> <span class="string">Blog</span> <span class="string">Deploy</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 只在push到master分支的时候启动</span></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">master</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用ubuntu虚拟机</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 工作流步骤</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Checkout</span> <span class="string">repository</span> <span class="string">master</span> <span class="string">branch</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/checkout@master</span></span><br><span class="line">      <span class="attr">with:</span></span><br><span class="line">        <span class="attr">submodules:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 安装Node.js</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">node.js</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/setup-node@master</span></span><br><span class="line">      <span class="attr">with:</span></span><br><span class="line">        <span class="attr">node-version:</span> <span class="string">"10.x"</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 安装Hexo</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">hexo</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-cli</span> <span class="string">-g</span></span><br><span class="line">        <span class="string">npm</span> <span class="string">install</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置SSH密钥，读取HEXO_DEPLOY_KEY</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Setup</span> <span class="string">private</span> <span class="string">key</span></span><br><span class="line">      <span class="attr">env:</span></span><br><span class="line">        <span class="attr">HEXO_DEPLOY_KEY:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.HEXO_DEPLOY_KEY</span> <span class="string">&#125;&#125;</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">mkdir</span> <span class="string">-p</span> <span class="string">~/.ssh/</span></span><br><span class="line">        <span class="string">echo</span> <span class="string">"$HEXO_DEPLOY_KEY"</span> <span class="string">&gt;</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">        <span class="string">chmod</span> <span class="number">600</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">        <span class="string">ssh-keyscan</span> <span class="string">github.com</span> <span class="string">&gt;&gt;</span> <span class="string">~/.ssh/known_hosts</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 配置Git设置</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Setup</span> <span class="string">git</span> <span class="string">settings</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.name</span> <span class="string">"GitHub用户名"</span></span><br><span class="line">        <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.email</span> <span class="string">"GitHub邮箱"</span></span><br><span class="line">    <span class="comment"># 更改上面的用户名和邮箱</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 部署</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Deploy</span> <span class="string">hexo</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">hexo</span> <span class="string">clean</span></span><br><span class="line">        <span class="string">hexo</span> <span class="string">generate</span></span><br><span class="line">        <span class="string">hexo</span> <span class="string">deploy</span></span><br></pre></td></tr></table></figure>
+<p>随后点击Start commit结束设置。这样以后只要有新的改动被push到<code>blog</code>的主分支，就会触发这个工作流，将网页渲染出来，同时也会push到<code>你的GitHub用户名.github.io</code>这个仓库里。</p>
+<h2 id="安装Markdown语法扩展"><a class="header-anchor" href="#安装Markdown语法扩展">¶</a>安装Markdown语法扩展</h2>
+<p><code>Hexo</code>原生的Markdown渲染插件支持的Markdown语法不够丰富，比如不支持<a href="https://github.github.com/gfm/" target="_blank" rel="noopener">GitHub Flavored Markdown</a>、<a href="https://commonmark.org/" target="_blank" rel="noopener">CommonMark</a>、上标下标、脚注等等。因此，我们在写文章之前，可以把原生的插件<code>hexo-renderer-marked</code>改为<code>hexo-renderer-markdown-it</code>。</p>
+<p>首先，根据该插件的<a href="https://github.com/hexojs/hexo-renderer-markdown-it/wiki/Getting-Started" target="_blank" rel="noopener">安装指南</a>，运行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm uninstall hexo-renderer-marked</span><br><span class="line">npm install hexo-renderer-markdown-it</span><br></pre></td></tr></table></figure>
+<p>随后在<code>_config.yml</code>里添加如下语句（可以添加在<code>deploy</code>前面）：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Markdown-it config</span></span><br><span class="line"><span class="comment">## Docs: https://github.com/celsomiranda/hexo-renderer-markdown-it/wiki</span></span><br><span class="line"><span class="attr">markdown:</span></span><br><span class="line">  <span class="attr">render:</span></span><br><span class="line">    <span class="attr">html:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">xhtmlOut:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">breaks:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">linkify:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">typographer:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">quotes:</span> <span class="string">'“”‘’'</span></span><br><span class="line">  <span class="attr">plugins:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-abbr</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-footnote</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-ins</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-sub</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-sup</span></span><br><span class="line">  <span class="attr">anchors:</span></span><br><span class="line">    <span class="attr">level:</span> <span class="number">2</span></span><br><span class="line">    <span class="attr">collisionSuffix:</span> <span class="string">'v'</span></span><br><span class="line">    <span class="attr">permalink:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">permalinkClass:</span> <span class="string">header-anchor</span></span><br><span class="line">    <span class="attr">permalinkSide:</span> <span class="string">'left'</span></span><br><span class="line">    <span class="attr">permalinkSymbol:</span> <span class="string">¶</span></span><br></pre></td></tr></table></figure>
+<p>随后你就可以使用扩展语法了。使用方法可以参看<a href="http://markdown.p2hp.com/extended-syntax/index.html" target="_blank" rel="noopener">这里</a>和<a href="https://markdown-it.github.io/" target="_blank" rel="noopener">这里</a>，尤其是后一个网页给出了很详细的例子。</p>
+<p>如果你觉得脚注字体偏大，可以看我的<a href="/20200718-hexo-next-font-settings/" title="Hexo NexT主题的字体更换">Hexo NexT主题的字体更换</a>，看完后就知道怎么修改了。我个人做了如下设置：</p>
+<figure class="highlight stylus"><figcaption><span>source/_data/styles.styl</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.footnotes</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">75%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为我们引入了新的插件，所以也要改一下工作流文件，在<code>安装Hexo</code>那一步加一些步骤，安装这些依赖。你可以在本地修改<code>.github/workflows/main.yml</code>的内容，也可以在GitHub的<code>blog</code>仓库，点击Actions，选择最近的一次部署，点击右侧的省略号中的View workflow file，然后点击右侧的铅笔按钮进行修改。将新的依赖安装写在<code>npm install</code>那一行后面即可。如果你采用后者，在你将本地新的改动push到GitHub之前，要记得先做<code>git pull</code>，否则会报错显示远程仓库有新的改动。推荐在本地修改，一步到位。</p>
+<figure class="highlight diff"><figcaption><span>.github/workflows/main.yml</span></figcaption><table><tr><td class="code"><pre><span class="line">run: |</span><br><span class="line">  npm install hexo-cli -g</span><br><span class="line">  npm install</span><br><span class="line"><span class="addition">+ npm uninstall hexo-renderer-marked</span></span><br><span class="line"><span class="addition">+ npm install hexo-renderer-markdown-it</span></span><br></pre></td></tr></table></figure>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>推荐源代码编辑器，因为普通的文本编辑器可能会对某些字符做转换，也不能识别语言与语法高亮。我个人使用Atom、Brackets、Sublime Text这三款。 <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+        <tag>Hexo</tag>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo静态博客指南：本站是如何诞生的（中）</title>
+    <url>/20200716-hexo-blog-guide-2/</url>
+    <content><![CDATA[<p>本文详细记录一下本站的建立过程，以便查阅。对于具体的细节则不会做过多解释，主要展示步骤。这一篇主要讲述更换<code>NexT</code>主题以及后续维护的相关内容。</p>
+<p>本文运行环境：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm: 6.14.7</span><br><span class="line">hexo: 4.2.1</span><br><span class="line">hexo-cli: 3.1.0</span><br><span class="line">NexT: 8.0.0-rc.4</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="更换主题"><a class="header-anchor" href="#更换主题">¶</a>更换主题</h2>
+<p>我们这里选择的是<code>NexT</code>主题。<code>Hexo</code>支持许多主题，你也可以选择自己喜欢的主题。</p>
+<h3 id="安装NexT"><a class="header-anchor" href="#安装NexT">¶</a>安装<code>NexT</code></h3>
+<p><code>NexT</code>是非常流行的<code>Hexo</code>主题。根据<a href="https://theme-next.org/" target="_blank" rel="noopener">这个网站</a>，该项目几经易手，经历过很多不同的版本。我们现在当然是采用目前的最新版本。</p>
+<p>首先我们运行<code>hexo -v</code>与<code>npm -v</code>查看一下<code>Hexo</code>与<code>Node.js</code>的版本，确保它们大于<a href="https://github.com/next-theme/hexo-theme-next#readme" target="_blank" rel="noopener">这个链接</a>里所示的版本最低要求。</p>
+<p>以下步骤主要参考了<a href="https://theme-next.js.org/docs/getting-started/" target="_blank" rel="noopener"><code>NexT</code>官方文档</a>。还是在博客的根目录里，运行如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/next-theme/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+<p>等待运行完毕，新主题就下载好了。这里需要区分的是，我们现在有了两个名为<code>_config.yml</code>的文件。一个是根目录下的<code>_config.yml</code>，这代表着站点的配置文件；还有一个是<code>themes/next/_config.yml</code>，这代表着这个主题的配置文件。要注意区分它们。</p>
+<p>下一步，我们打开站点配置文件<code>_config.yml</code>，找到<code>theme</code>那一行并改为<code>theme: next</code>，主题就更换完毕了。你可以运行<code>hexo clean; hexo g; hexo s</code>来查看效果。</p>
+<h3 id="设置git-submodule"><a class="header-anchor" href="#设置git-submodule">¶</a>设置<code>git submodule</code></h3>
+<p>如果此时你尝试使用<code>git add .</code>，你会发现会有如下的warning：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">warning: adding embedded git repository: themes&#x2F;next</span><br><span class="line">hint: You&#39;ve added another git repository inside your current repository.</span><br><span class="line">hint: Clones of the outer repository will not contain the contents of</span><br><span class="line">hint: the embedded repository and will not know how to obtain it.</span><br><span class="line">hint: If you meant to add a submodule, use:</span><br><span class="line">hint:</span><br><span class="line">hint: 	git submodule add &lt;url&gt; themes&#x2F;next</span><br><span class="line">hint:</span><br><span class="line">hint: If you added this path by mistake, you can remove it from the</span><br><span class="line">hint: index with:</span><br><span class="line">hint:</span><br><span class="line">hint: 	git rm --cached themes&#x2F;next</span><br><span class="line">hint:</span><br><span class="line">hint: See &quot;git help submodule&quot; for more information.</span><br></pre></td></tr></table></figure>
+<p>这是因为<code>themes/next</code>文件夹来源于另外的<code>git</code>项目，因此无法上传。在这里有许多解决办法，其中一个办法是删除<code>themes/next</code>里的<code>.git</code>文件夹。这并不是一个好办法，因为这样的话就无法再通过<code>git pull</code>更新<code>themes/next</code>模块。因此，比较好的办法是设置<code>git submodule</code>。</p>
+<p>注意，使用本文的办法后，将不再推荐修改<code>themes/next/_config.yml</code>文件。因为修改该文件可能在更新主题时会造成本地修改与远程更新的冲突。当然，这也可以通过<code>git stash</code>、<code>git pull</code>、<code>git stash pop</code>然后修复conflicts来解决，但总归是比较麻烦。如果你需要深度定制该主题，建议fork一份改主题源代码到自己的GitHub上，然后将自己fork后的仓库作为<code>submodule</code>。具体的做法可以参考网上的其他教程。这里假设你不会再修改<code>themes/next/_config.yml</code>文件（放心，还有其他方法可以更改主题设置）。</p>
+<p>在添加<code>submodule</code>之前先做一点准备工作：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git rm -r --cached themes/next</span><br></pre></td></tr></table></figure>
+<p>然后运行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add https://github.com/next-theme/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+<p>这会在你的根目录下添加<code>.gitmodules</code>文件，内容如下：</p>
+<figure class="highlight plain"><figcaption><span>.gitmodules</span></figcaption><table><tr><td class="code"><pre><span class="line">[submodule &quot;themes&#x2F;next&quot;]</span><br><span class="line">	path &#x3D; themes&#x2F;next</span><br><span class="line">	url &#x3D; https:&#x2F;&#x2F;github.com&#x2F;next-theme&#x2F;hexo-theme-next</span><br></pre></td></tr></table></figure>
+<p>在这之后，如果你想更新<code>NexT</code>主题的代码，可以使用<code>git submodule update --remote</code>命令。你也可以进入<code>themes/next</code>文件夹使用<code>git pull</code>。</p>
+<p>让我们提交这一次修改：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"change theme"</span></span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<h2 id="修改主题配置"><a class="header-anchor" href="#修改主题配置">¶</a>修改主题配置</h2>
+<p>前文推荐不要修改<code>themes/next/_config.yml</code>文件。我们想要自定义一些配置，该怎么做呢？官方教程给出了<a href="https://theme-next.js.org/docs/getting-started/configuration.html" target="_blank" rel="noopener">答案</a>。</p>
+<p>在这里，有两种修改方式，一种是Hexo-Way，也就是把所有设置都放在根目录的<code>_config.yml</code>里。还有一种是NexT-Way，也就是把主题设置放在<code>source/_data/next.yml</code>里。这里我们选择后者。</p>
+<p>我们新建文件夹并复制文件：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir -p <span class="built_in">source</span>/_data</span><br><span class="line">cp themes/next/_config.yml <span class="built_in">source</span>/_data/next.yml</span><br></pre></td></tr></table></figure>
+<p>随后，你就可以修改<code>source/_data/next.yml</code>里的内容了。这里讲几个主要的配置。</p>
+<h3 id="主题样式与暗色模式"><a class="header-anchor" href="#主题样式与暗色模式">¶</a>主题样式与暗色模式</h3>
+<p>主题样式在<code># Schemes</code>下面。一共有四种样式，分别是Muse，Mist，Pisces和Gemini。其中前两种是单栏样式，后两种是双栏样式，如果要更改，只需注释掉当前样式，再取消注释想要更改的样式即可。</p>
+<p>在下方的Dark Mode选项里，你可以选择为网页开启暗色模式，只需要把<code>false</code>变成<code>true</code>即可。</p>
+<h3 id="菜单与侧边栏项目"><a class="header-anchor" href="#菜单与侧边栏项目">¶</a>菜单与侧边栏项目</h3>
+<p>在<code># Menu Settings</code>下面你可以选择开启菜单项目。它们都是默认关闭（被注释掉）的。需要哪一项，取消注释即可。</p>
+<p>注意，除了<code>home</code>与<code>archives</code>，其他的页面需要手动添加。比如，你想要开启<code>about</code>页面，那么就要在<code>Hexo</code>根目录下运行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo new page <span class="string">"about"</span></span><br></pre></td></tr></table></figure>
+<p>随后在<code>source</code>文件夹下面就会生成<code>about</code>目录，里面有<code>index.md</code>文件。你可以更改文件内的标题，随后在<code>date</code>行下面加一句：</p>
+<figure class="highlight diff"><figcaption><span>source/about/index.md</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="addition">+ type: "about"</span></span><br></pre></td></tr></table></figure>
+<p>如果需要还可以加上<code>comments: false</code>来为这个页面关闭评论（后文会讲到如何添加评论功能）。</p>
+<p>就大功告成了。你可以随意编辑这个页面。你也可以自定义菜单项目，甚至可以嵌套项目，具体做法可以查看<a href="https://theme-next.js.org/docs/getting-started/#Configuring-Menu-Items" target="_blank" rel="noopener">官方教程</a>。</p>
+<p>这里举个简单的例子，假如我们要新建一个菜单项目叫做<code>notes</code>，首先在<code># Menu Settings</code>的<code>menu</code>下面新建一行：</p>
+<figure class="highlight diff"><figcaption><span>source/_data/next.yml</span></figcaption><table><tr><td class="code"><pre><span class="line">menu:</span><br><span class="line">  home: / || fa fa-home</span><br><span class="line">  about: /about/ || fa fa-user</span><br><span class="line">  tags: /tags/ || fa fa-tags</span><br><span class="line">  categories: /categories/ || fa fa-th</span><br><span class="line">  archives: /archives/ || fa fa-archive</span><br><span class="line">  #schedule: /schedule/ || fa fa-calendar</span><br><span class="line">  #sitemap: /sitemap.xml || fa fa-sitemap</span><br><span class="line">  #commonweal: /404/ || fa fa-heartbeat</span><br><span class="line"><span class="addition">+ notes: /notes/ || fa fa-sticky-note</span></span><br></pre></td></tr></table></figure>
+<p>图标的代码可以去<a href="https://fontawesome.com/" target="_blank" rel="noopener">Font Awesome</a>网页上查找。随后如前面的例子，手动添加页面即可。如要添加自定义菜单的中文翻译，需要新建<code>source/_data/languages.yml</code>文件，然后写入如下内容：</p>
+<figure class="highlight yaml"><figcaption><span>source/_data/languages.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">zh-CN:</span></span><br><span class="line">  <span class="attr">menu:</span></span><br><span class="line">    <span class="attr">notes:</span> <span class="string">笔记</span></span><br></pre></td></tr></table></figure>
+<p>任何翻译都可以在这个文件里设置或覆盖。</p>
+<p>此外，在<code># Sidebar Settings</code>下面可以找到关于侧边栏的一些设置。除了它本身的一些参数，你还可以设置其中的一些内容，比如<code>social</code>下面可以开启你的社交网络账号与主页。另外，搜索<code>back2top</code>还可以让你把回到首页的按钮放在侧边栏，并开启阅读进度百分比功能。</p>
+<h3 id="网站图标与头像"><a class="header-anchor" href="#网站图标与头像">¶</a>网站图标与头像</h3>
+<p>网站图标可以在<code># Site Information Settings</code>的<code>favicon</code>下面找到。默认读取的图标位于<code>themes/next/source/images/</code>下面。我们当然不应该修改<code>themes/next</code>里面的内容，因此如果要更换，可以把图标放在<code>source/images/</code>目录里（如果没有这个目录就自己新建）。教程还推荐了<a href="https://realfavicongenerator.net/" target="_blank" rel="noopener">这个网站</a>来生成你自己的图标。</p>
+<p>头像则在侧边栏设置的<code># Sidebar Avatar</code>下面。你可以把头像放在<code>source/uploads/</code>目录里（如果没有这个目录就自己新建）。</p>
+<h3 id="知识共享许可协议设置"><a class="header-anchor" href="#知识共享许可协议设置">¶</a>知识共享许可协议设置</h3>
+<p>Creative Commons设置可以搜索<code>creative_commons</code>。它支持多种协议，默认是<code>by-nc-sa</code>。更多协议可以参考<a href="https://zh.wikipedia.org/wiki/%E7%9F%A5%E8%AF%86%E5%85%B1%E4%BA%AB%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">维基百科的解释</a>。</p>
+<h3 id="代码块样式"><a class="header-anchor" href="#代码块样式">¶</a>代码块样式</h3>
+<p>你可以在<a href="https://theme-next.js.org/highlight/" target="_blank" rel="noopener">这里</a>查看并选择你喜欢的样式，随后搜索<code>codeblock</code>修改。你还可以打开复制按钮，方便读者复制代码块里的内容。</p>
+<h3 id="阅读进度、书签与GitHub横幅"><a class="header-anchor" href="#阅读进度、书签与GitHub横幅">¶</a>阅读进度、书签与GitHub横幅</h3>
+<p>搜索<code>reading_progress</code>即可开启阅读进度功能。还可以在<code>bookmark</code>开启书签功能，读者可以选择点击书签图标来保存阅读进度，下次进入这篇文章时就可以继续阅读。</p>
+<p>下面的<code>github_banner</code>可以让你开启GitHub横幅，它会在网页右上角显示一个小横幅，直通你的GitHub主页。</p>
+<h3 id="字体设置"><a class="header-anchor" href="#字体设置">¶</a>字体设置</h3>
+<p>在<code># Font Settings</code>可以更改字体设置，<code>NexT</code>允许你更改全局字体、网站标题字体、<code>h1-h6</code>标题字体，文章字体与代码字体。如果你的定制程度比较高，还是参看<a href="https://theme-next.js.org/docs/theme-settings/#Fonts-Customization" target="_blank" rel="noopener">官方教程</a>比较好。</p>
+<h3 id="设置中英文自动空格"><a class="header-anchor" href="#设置中英文自动空格">¶</a>设置中英文自动空格</h3>
+<p>这个功能已经内置在NexT主题中。在<code>source/_data/next.yml</code>中搜索并开启<code>pangu</code>即可。</p>
+<h2 id="增加第三方服务"><a class="header-anchor" href="#增加第三方服务">¶</a>增加第三方服务</h2>
+<p>同样，<a href="https://theme-next.js.org/docs/third-party-services/" target="_blank" rel="noopener">官方教程</a>还是比较详细的，解释了很多第三方插件的用法，囊括了数学公式、评论系统、网站统计与分析、评分与分享小部件、搜索功能、即时聊天室等等。这里只讲一下我个人开启的服务。</p>
+<h3 id="LeanCloud阅读统计功能"><a class="header-anchor" href="#LeanCloud阅读统计功能">¶</a>LeanCloud阅读统计功能</h3>
+<p>这部分参考了<a href="https://github.com/theme-next/hexo-theme-next/blob/master/docs/zh-CN/LEANCLOUD-COUNTER-SECURITY.md" target="_blank" rel="noopener">这篇文章</a>。</p>
+<p>注册LeanCloud时，建议注册<a href="https://leancloud.app/" target="_blank" rel="noopener">国际版</a>，<a href="https://www.leancloud.cn/" target="_blank" rel="noopener">国内版</a>要验证的东西比较多。然后新建一个应用，名字可以任意写。随后打开应用，点击存储条目下的结构化数据，然后点击创建Class，名称为Counter，其他保持默认。随后去设置里的<code>应用Keys</code>记下<code>AppID</code>与<code>AppKey</code>。</p>
+<p>打开<code>source/_data/next.yml</code>，搜索<code>leancloud_visitors</code>，将其打开，填写刚才的<code>AppID</code>与<code>AppKey</code>，<code>security</code>也设置为打开。随后的步骤比较多且复杂，请参考上面的文章，但是介于现在LeanCloud又有更新，所以做一点补充说明。</p>
+<p>首先，上面的参考文章里，需要打开NexT主题配置文件的时候，我们统一打开<br>
+<code>source/_data/next.yml</code>。要时刻记住NexT主题的目录不要修改。</p>
+<p>其次，在博客配置文件<code>_config.yml</code>里，在<code>theme:next</code>后面（你也可以添加到别的位置）添加的内容是：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">leancloud_counter_security:</span></span><br><span class="line">  <span class="attr">enable_sync:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">app_id:</span> <span class="string">你的AppID</span></span><br><span class="line">  <span class="attr">app_key:</span> <span class="string">你的AppKey</span></span><br><span class="line">  <span class="attr">username:</span> <span class="string">你用"hexo</span> <span class="string">lc-counter</span> <span class="string">register"注册的用户名</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">你用"hexo</span> <span class="string">lc-counter</span> <span class="string">register"注册的密码</span></span><br></pre></td></tr></table></figure>
+<p>记得在这之前要安装：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-leancloud-counter-security</span><br></pre></td></tr></table></figure>
+<p>然后，在配置<code>deploy</code>的时候，因为我们多加了一项，所以应该改为：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="string">你的GitHub目录地址</span></span><br><span class="line">    <span class="attr">branch:</span> <span class="string">master</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">leancloud_counter_security_sync</span></span><br></pre></td></tr></table></figure>
+<p>也就是每一个<code>type</code>前面都要加上<code>-</code>。</p>
+<p>随后，在设置Counter的权限时，我们在<code>add_field</code>与<code>create</code>均选择指定用户，随后在用户名里输入你用<code>hexo lc-counter register</code>注册的用户名，它会自动找到对应的用户。在设置完后，两项都应该显示<code>0 Role, 1 User</code>。对于<code>delete</code>，选择指定用户留空即可，会显示显示<code>0 Role, 0 User</code>。</p>
+<h3 id="Valine评论系统"><a class="header-anchor" href="#Valine评论系统">¶</a>Valine评论系统</h3>
+<p>在前一步的基础上，在<code>source/_data/next.yml</code>找到<code># Valine</code>，将其打开，并且填写<code>appId</code>与<code>appKey</code>。在这里，我们把<code>visitor</code>设置为<code>true</code>，随后把上一步的<code>leancloud_visitors</code>下的<code>enable</code>设置为<code>false</code>，因为两者之间有冲突。</p>
+<h3 id="不蒜子网页计数器功能"><a class="header-anchor" href="#不蒜子网页计数器功能">¶</a>不蒜子网页计数器功能</h3>
+<p>这个功能可以显示网站的浏览量和访客数。在<code>source/_data/next.yml</code>里找到<code>busuanzi_count</code>，将其打开，因为我们已经开启了LeanCloud的计数功能，所以将<code>post_views</code>关掉（否则文章内部的阅读次数会有异常），其他保持打开即可。</p>
+<p>如果在本地测试，你会发现统计数据非常大，这是因为不蒜子通过域名统计，所以<code>localhost:4000</code>的数字会比较大，不必担心。</p>
+<h3 id="Local-Search搜索功能"><a class="header-anchor" href="#Local-Search搜索功能">¶</a>Local Search搜索功能</h3>
+<p>首先在根目录安装：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-generator-searchdb</span><br></pre></td></tr></table></figure>
+<p>随后，在博客配置文件<code>_config.yml</code>里加入：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">search:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">search.xml</span></span><br><span class="line">  <span class="attr">field:</span> <span class="string">post</span></span><br><span class="line">  <span class="attr">format:</span> <span class="string">html</span></span><br><span class="line">  <span class="attr">limit:</span> <span class="number">10000</span></span><br></pre></td></tr></table></figure>
+<p>然后在<code>source/_data/next.yml</code>里打开<code>local_search</code>。</p>
+<h3 id="Word-Counter字数统计与阅读时长功能"><a class="header-anchor" href="#Word-Counter字数统计与阅读时长功能">¶</a>Word Counter字数统计与阅读时长功能</h3>
+<p>首先在根目录安装：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-word-counter</span><br></pre></td></tr></table></figure>
+<p>随后，在博客配置文件<code>_config.yml</code>里加入：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">symbols_count_time:</span></span><br><span class="line">  <span class="attr">symbols:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">time:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">total_symbols:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">total_time:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">exclude_codeblock:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">awl:</span> <span class="number">4</span></span><br><span class="line">  <span class="attr">wpm:</span> <span class="number">275</span></span><br><span class="line">  <span class="attr">suffix:</span> <span class="string">"mins."</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是，如果插件需要安装新的包，而你像我一样设置了自动部署，那么你可能需要更新一下你的工作流，在<code>安装Hexo</code>那一步加一些步骤，安装这些依赖。修改<code>.github/workflows/main.yml</code>的内容，将新的依赖安装写在<code>npm install</code>那一行后面即可。</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+        <tag>Hexo</tag>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+</search>

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.png" color="#222">
+  <link rel="manifest" href="/images/site.webmanifest">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <meta name="google-site-verification" content="AziEKmwN1dn5YyfMDxzwqHobIACkcSuqgTgbVYBeuhg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Sans SC:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"bambrow.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.4","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文详细记录一下本站的建立过程，以便查阅。对于具体的细节则不会做过多解释，主要展示步骤。这一篇主要讲述准备工作、首次部署与自动部署的相关内容。 本文运行环境： 1234node: v14.4.0npm: 6.14.7hexo: 4.2.1hexo-cli: 3.1.0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo静态博客指南：本站是如何诞生的（上）">
+<meta property="og:url" content="https://bambrow.com/20200715-hexo-blog-guide-1/index.html">
+<meta property="og:site_name" content="Bambrow&#39;s Blog">
+<meta property="og:description" content="本文详细记录一下本站的建立过程，以便查阅。对于具体的细节则不会做过多解释，主要展示步骤。这一篇主要讲述准备工作、首次部署与自动部署的相关内容。 本文运行环境： 1234node: v14.4.0npm: 6.14.7hexo: 4.2.1hexo-cli: 3.1.0">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-15T14:36:29.000Z">
+<meta property="article:modified_time" content="2020-08-11T02:07:10.609Z">
+<meta property="article:author" content="bambrow">
+<meta property="article:tag" content="技术">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="博客">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://bambrow.com/20200715-hexo-blog-guide-1/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Hexo静态博客指南：本站是如何诞生的（上） | Bambrow's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-173014076-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-173014076-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?0c836373b8ebbef198966adf9f3fd5a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Bambrow's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Half as much, twice as elegant.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-notes">
+
+    <a href="/notes/" rel="section"><i class="fa fa-sticky-note fa-fw"></i>笔记</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Git与Node-js"><span class="nav-number">1.1.</span> <span class="nav-text">安装Git与Node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Hexo"><span class="nav-number">1.2.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注册GitHub并新建个人仓库"><span class="nav-number">1.3.</span> <span class="nav-text">注册GitHub并新建个人仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置Git与密钥文件"><span class="nav-number">1.4.</span> <span class="nav-text">设置Git与密钥文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开始建站"><span class="nav-number">2.</span> <span class="nav-text">开始建站</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#博客初始化"><span class="nav-number">2.1.</span> <span class="nav-text">博客初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置-config-yml"><span class="nav-number">2.2.</span> <span class="nav-text">设置_config.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#首次部署"><span class="nav-number">2.3.</span> <span class="nav-text">首次部署</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置自动部署"><span class="nav-number">3.</span> <span class="nav-text">设置自动部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将源文件备份至私有仓库"><span class="nav-number">3.1.</span> <span class="nav-text">将源文件备份至私有仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置GitHub-Actions"><span class="nav-number">3.2.</span> <span class="nav-text">设置GitHub Actions</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Markdown语法扩展"><span class="nav-number">4.</span> <span class="nav-text">安装Markdown语法扩展</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">bambrow</p>
+  <div class="site-description" itemprop="description">Bambrow's blog about everything.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/bambrow" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;bambrow" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:bambrow@foxmail.com" title="E-Mail → mailto:bambrow@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </section>
+        <div class="back-to-top animated">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://bambrow.com/20200715-hexo-blog-guide-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="bambrow">
+      <meta itemprop="description" content="Bambrow's blog about everything.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bambrow's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hexo静态博客指南：本站是如何诞生的（上）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-15 10:36:29" itemprop="dateCreated datePublished" datetime="2020-07-15T10:36:29-04:00">2020-07-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-10 22:07:10" itemprop="dateModified" datetime="2020-08-10T22:07:10-04:00">2020-08-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/20200715-hexo-blog-guide-1/" class="post-meta-item leancloud_visitors" data-flag-title="Hexo静态博客指南：本站是如何诞生的（上）" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/20200715-hexo-blog-guide-1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/20200715-hexo-blog-guide-1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+    </span>
+    <span class="post-meta-item-text">
+        繁/简：
+    </span>
+    <a id="translateLink" href="javascript:translatePage();">
+        <span class="translate-style">
+            繁
+        </span>
+    </a>
+</span>
+<script type="text/javascript" src="/js/tw_cn.js"></script>
+<script type="text/javascript">
+    var defaultEncoding = 2; //网站编写字体是否繁体，1-繁体，2-简体
+    var translateDelay = 0; //延迟时间,若不在前, 要设定延迟翻译时间, 如100表示100ms,默认为0
+    var cookieDomain = "https://bambrow.com/"; //Cookie地址, 一定要设定, 通常为你的网址
+    var msgToTraditionalChinese = "繁"; //此处可以更改为你想要显示的文字
+    var msgToSimplifiedChinese = "简"; //同上，但两处均不建议更改
+    var translateButtonId = "translateLink"; //默认互换id
+    translateInitilization();
+</script>
+
+<br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文详细记录一下本站的建立过程，以便查阅。对于具体的细节则不会做过多解释，主要展示步骤。这一篇主要讲述准备工作、首次部署与自动部署的相关内容。</p>
+<p>本文运行环境：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">node: v14.4.0</span><br><span class="line">npm: 6.14.7</span><br><span class="line">hexo: 4.2.1</span><br><span class="line">hexo-cli: 3.1.0</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="准备工作"><a class="header-anchor" href="#准备工作">¶</a>准备工作</h2>
+<p>准备工作主要参考了<a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">Hexo官方文档</a>。</p>
+<h3 id="安装Git与Node-js"><a class="header-anchor" href="#安装Git与Node-js">¶</a>安装Git与Node.js</h3>
+<p>在Mac上最方便的方法当然是通过<a href="https://brew.sh/" target="_blank" rel="noopener">Homebrew</a>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/bash -c <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)</span>"</span></span><br></pre></td></tr></table></figure>
+<p>注意，可能在安装之前需要先安装Command Line Tools for Xcode。直接在终端输入<code>xcode-select --install</code>安装。</p>
+<p>安装好Homebrew后，直接使用以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install git</span><br><span class="line">brew install node</span><br></pre></td></tr></table></figure>
+<p>在安装以上两个依赖之前，可以先运行<code>brew update</code>来更新Homebrew。此外，还可以运行<code>brew doctor</code>检查一下有没有什么冲突，可以及时处理。也可以把以下语句加入你的<code>.bash_profile</code>或者<code>.zshrc</code>，取决于你使用的shell：</p>
+<figure class="highlight bash"><figcaption><span>.bash_profile</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">"/usr/local/bin:<span class="variable">$PATH</span>"</span></span><br></pre></td></tr></table></figure>
+<p>安装好后，可以用以下命令查看是否安装成功，成功则会返回版本号：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git --version</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+<h3 id="安装Hexo"><a class="header-anchor" href="#安装Hexo">¶</a>安装Hexo</h3>
+<p>直接使用<code>npm</code>安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+<p>查看一下<code>hexo</code>是否安装成功，会返回当前的<code>hexo</code>版本号：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
+<h3 id="注册GitHub并新建个人仓库"><a class="header-anchor" href="#注册GitHub并新建个人仓库">¶</a>注册GitHub并新建个人仓库</h3>
+<p><a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>就不用多说了。注册完成后，新建公有仓库，名称为<code>你的GitHub用户名.github.io</code>，比如我的就叫做<code>bambrow.github.io</code>。这个仓库用来存放渲染好的页面。</p>
+<p>此外，我们再新建一个私有仓库，用来存放源文件本身。仓库的名字任意取，我取的名字是<code>blog</code>。</p>
+<p>这两个仓库最好不要初始化任何东西，也就是<code>README</code>，<code>.gitignore</code>和<code>license</code>都不要。这样新建的仓库完全是空的。</p>
+<h3 id="设置Git与密钥文件"><a class="header-anchor" href="#设置Git与密钥文件">¶</a>设置Git与密钥文件</h3>
+<p>首先运行以下两句进行Git配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name <span class="string">"GitHub用户名"</span></span><br><span class="line">git config --global user.email <span class="string">"GitHub注册邮箱"</span></span><br></pre></td></tr></table></figure>
+<p>其中把用户名和邮箱替换成你自己的。然后我们生成密钥文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">"GitHub注册邮箱"</span></span><br></pre></td></tr></table></figure>
+<p>直接一路回车下去就好，结束后会在<code>~/.ssh/</code>文件夹里生成<code>id_rsa</code>私钥文件与<code>id_rsa.pub</code>公钥文件。我们读取一下公钥的内容并且手动拷贝：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+<p>手动复制显示的内容。随后打开<a href="https://github.com/settings/keys" target="_blank" rel="noopener">这个页面</a>设置SSH Key。你也可以在GitHub主页点击你的右上角头像，选择Settings，然后选择SSH and GPG Keys找到这个界面。点击New SSH Key，标题可以随便写，内容就是你刚才复制的公钥内容，随后保存。</p>
+<h2 id="开始建站"><a class="header-anchor" href="#开始建站">¶</a>开始建站</h2>
+<h3 id="博客初始化"><a class="header-anchor" href="#博客初始化">¶</a>博客初始化</h3>
+<p>首先选择一个你喜欢的地方作为你的博客根目录。我自己选择了与<code>bambrow.github.io</code>的同名目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/git/bambrow.github.io</span><br></pre></td></tr></table></figure>
+<p>随后按照<a href="https://hexo.io/zh-cn/docs/setup" target="_blank" rel="noopener">官方教程</a>，依次运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo init ~/git/bambrow.github.io</span><br><span class="line"><span class="built_in">cd</span> ~/git/bambrow.github.io</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<p>现在博客已经初始化完成了。使用以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo server</span><br></pre></td></tr></table></figure>
+<p>就可以在<a href="http://localhost:4000" target="_blank" rel="noopener">http://localhost:4000</a>看到你的站点了。可以在终端里使用<code>control+c</code>关掉本地服务器。下面列举一些常用的命令，更多命令与参数可以参考<a href="https://hexo.io/zh-cn/docs/commands" target="_blank" rel="noopener">这里</a>：</p>
+<ul>
+<li><code>hexo clean</code> 用于清除缓存与静态文件。</li>
+<li><code>hexo new &quot;文章标题&quot;</code> 用于新建文章。</li>
+<li><code>hexo server</code> 用于启动本地服务器查看渲染好的网页，可简写为<code>hexo s</code>。</li>
+<li><code>hexo generate</code> 用于生成静态文件，可简写为<code>hexo g</code>。</li>
+<li><code>hexo deploy</code> 用于部署网站，需要先设置好<code>_config.yml</code>，可简写为<code>hexo d</code>。</li>
+</ul>
+<h3 id="设置-config-yml"><a class="header-anchor" href="#设置-config-yml">¶</a>设置<code>_config.yml</code></h3>
+<p>首先，可以参考官方的<a href="https://hexo.io/zh-cn/docs/configuration" target="_blank" rel="noopener">设置页面</a>，这里只涉及一些核心设置。</p>
+<p>用你喜欢的编辑器<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>打开根目录下的<code>_config.yml</code>（注意不是<code>themes</code>文件夹里面的<code>_config.yml</code>）。</p>
+<p>在<code>Site</code>下面你可以更改网页的标题、副标题、描述、作者、语言、时区等等。语言这里选择<code>zh-CN</code>。在<code>URL</code>下面可以把<code>url</code>改为你的GitHub Pages的URL，<code>https://你的GitHub用户名.github.io</code>。中间的大部分设置跳过，你也可以参照上面的网页进行修改。</p>
+<p>最后，我们重点关注一下<code># Deployment</code>。在这里，我们需要把它改为如下的样式：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">你的GitHub目录地址</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+<p>其中<code>repo</code>要根据自己的情况修改。你可以在GitHub主页点击你的头像，选择Your repositories，点击你的<code>你的GitHub用户名.github.io</code>仓库，点击Code按钮，然后点击Use SSH（如果目前显示为Clone with HTTPS），然后复制框中的内容到这里。</p>
+<p>修改好后，保存文件。</p>
+<h3 id="首次部署"><a class="header-anchor" href="#首次部署">¶</a>首次部署</h3>
+<p>我们需要再安装一个依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+<p>随后一切就绪，依次运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+<p>然后你就可以在<code>https://你的GitHub用户名.github.io</code>看到渲染好的网页了。</p>
+<h2 id="设置自动部署"><a class="header-anchor" href="#设置自动部署">¶</a>设置自动部署</h2>
+<p>在这一步里我们不仅备份了博客的源文件，也实现了修改push到<code>blog</code>私有仓库后触发GitHub Actions完成自动部署。</p>
+<h3 id="将源文件备份至私有仓库"><a class="header-anchor" href="#将源文件备份至私有仓库">¶</a>将源文件备份至私有仓库</h3>
+<p>在终端，自己的<code>GitHub用户名.github.io</code>文件夹内，手动添加远程仓库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git remote add origin git@github.com:bambrow/blog.git</span><br></pre></td></tr></table></figure>
+<p>这里的远程仓库就是你的<code>blog</code>仓库。把上面的<code>git@github.com:bambrow/blog.git</code>修改成你自己的仓库地址。方法同样是在网页进入<code>blog</code>仓库，点击Code按钮，然后点击Use SSH（如果目前显示为Clone with HTTPS），然后复制框中的内容到这里。</p>
+<p>随后我们编辑一下<code>.gitignore</code>文件。可以使用你喜欢的编辑器。一般来讲，<code>.gitignore</code>应该有如下内容：</p>
+<figure class="highlight plain"><figcaption><span>.gitignore</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.DS_Store</span><br><span class="line">Thumbs.db</span><br><span class="line">db.json</span><br><span class="line">*.log</span><br><span class="line">node_modules&#x2F;</span><br><span class="line">public&#x2F;</span><br><span class="line">.deploy*&#x2F;</span><br></pre></td></tr></table></figure>
+<p>编辑好之后，先做：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull origin master</span><br></pre></td></tr></table></figure>
+<p>随后把所有应该备份的文件push到GitHub：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"initial commit"</span></span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<p>此时去GitHub上查看<code>blog</code>仓库，会发现内容已经更新。</p>
+<h3 id="设置GitHub-Actions"><a class="header-anchor" href="#设置GitHub-Actions">¶</a>设置GitHub Actions</h3>
+<p>请注意，在做这一步之前，请务必确认自己的<code>blog</code>仓库是私有仓库，如果不是，一定要在设置里将其设置为私有。</p>
+<p>之前建立好的密钥文件，有公钥也有私钥。我们已经用过了公钥，这次使用私钥。首先读取其内容并手动拷贝：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<p>手动复制全部内容。随后在网页上打开自己的<code>blog</code>仓库，点击Settings，再点击左侧的Secrets，随后新建。名称可以随意写，这里推荐<code>HEXO_DEPLOY_KEY</code>；内容则是刚才复制的私钥全部内容。随后点击添加。</p>
+<p>随后，我们开始设置工作流。点击你的仓库标签下的Actions，选择新建New workflow。随后选择set up a workflow yourself，将<code>main.yml</code>的内容替换如下，你也可以自行修改：</p>
+<figure class="highlight yaml"><figcaption><span>.github/workflows/main.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 工作流名称</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">Hexo</span> <span class="string">Blog</span> <span class="string">Deploy</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 只在push到master分支的时候启动</span></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">master</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用ubuntu虚拟机</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 工作流步骤</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Checkout</span> <span class="string">repository</span> <span class="string">master</span> <span class="string">branch</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/checkout@master</span></span><br><span class="line">      <span class="attr">with:</span></span><br><span class="line">        <span class="attr">submodules:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 安装Node.js</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">node.js</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/setup-node@master</span></span><br><span class="line">      <span class="attr">with:</span></span><br><span class="line">        <span class="attr">node-version:</span> <span class="string">"10.x"</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 安装Hexo</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">hexo</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-cli</span> <span class="string">-g</span></span><br><span class="line">        <span class="string">npm</span> <span class="string">install</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置SSH密钥，读取HEXO_DEPLOY_KEY</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Setup</span> <span class="string">private</span> <span class="string">key</span></span><br><span class="line">      <span class="attr">env:</span></span><br><span class="line">        <span class="attr">HEXO_DEPLOY_KEY:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.HEXO_DEPLOY_KEY</span> <span class="string">&#125;&#125;</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">mkdir</span> <span class="string">-p</span> <span class="string">~/.ssh/</span></span><br><span class="line">        <span class="string">echo</span> <span class="string">"$HEXO_DEPLOY_KEY"</span> <span class="string">&gt;</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">        <span class="string">chmod</span> <span class="number">600</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">        <span class="string">ssh-keyscan</span> <span class="string">github.com</span> <span class="string">&gt;&gt;</span> <span class="string">~/.ssh/known_hosts</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 配置Git设置</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Setup</span> <span class="string">git</span> <span class="string">settings</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.name</span> <span class="string">"GitHub用户名"</span></span><br><span class="line">        <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.email</span> <span class="string">"GitHub邮箱"</span></span><br><span class="line">    <span class="comment"># 更改上面的用户名和邮箱</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 部署</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Deploy</span> <span class="string">hexo</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">hexo</span> <span class="string">clean</span></span><br><span class="line">        <span class="string">hexo</span> <span class="string">generate</span></span><br><span class="line">        <span class="string">hexo</span> <span class="string">deploy</span></span><br></pre></td></tr></table></figure>
+<p>随后点击Start commit结束设置。这样以后只要有新的改动被push到<code>blog</code>的主分支，就会触发这个工作流，将网页渲染出来，同时也会push到<code>你的GitHub用户名.github.io</code>这个仓库里。</p>
+<h2 id="安装Markdown语法扩展"><a class="header-anchor" href="#安装Markdown语法扩展">¶</a>安装Markdown语法扩展</h2>
+<p><code>Hexo</code>原生的Markdown渲染插件支持的Markdown语法不够丰富，比如不支持<a href="https://github.github.com/gfm/" target="_blank" rel="noopener">GitHub Flavored Markdown</a>、<a href="https://commonmark.org/" target="_blank" rel="noopener">CommonMark</a>、上标下标、脚注等等。因此，我们在写文章之前，可以把原生的插件<code>hexo-renderer-marked</code>改为<code>hexo-renderer-markdown-it</code>。</p>
+<p>首先，根据该插件的<a href="https://github.com/hexojs/hexo-renderer-markdown-it/wiki/Getting-Started" target="_blank" rel="noopener">安装指南</a>，运行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall hexo-renderer-marked</span><br><span class="line">npm install hexo-renderer-markdown-it</span><br></pre></td></tr></table></figure>
+<p>随后在<code>_config.yml</code>里添加如下语句（可以添加在<code>deploy</code>前面）：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Markdown-it config</span></span><br><span class="line"><span class="comment">## Docs: https://github.com/celsomiranda/hexo-renderer-markdown-it/wiki</span></span><br><span class="line"><span class="attr">markdown:</span></span><br><span class="line">  <span class="attr">render:</span></span><br><span class="line">    <span class="attr">html:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">xhtmlOut:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">breaks:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">linkify:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">typographer:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">quotes:</span> <span class="string">'“”‘’'</span></span><br><span class="line">  <span class="attr">plugins:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-abbr</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-footnote</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-ins</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-sub</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-sup</span></span><br><span class="line">  <span class="attr">anchors:</span></span><br><span class="line">    <span class="attr">level:</span> <span class="number">2</span></span><br><span class="line">    <span class="attr">collisionSuffix:</span> <span class="string">'v'</span></span><br><span class="line">    <span class="attr">permalink:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">permalinkClass:</span> <span class="string">header-anchor</span></span><br><span class="line">    <span class="attr">permalinkSide:</span> <span class="string">'left'</span></span><br><span class="line">    <span class="attr">permalinkSymbol:</span> <span class="string">¶</span></span><br></pre></td></tr></table></figure>
+<p>随后你就可以使用扩展语法了。使用方法可以参看<a href="http://markdown.p2hp.com/extended-syntax/index.html" target="_blank" rel="noopener">这里</a>和<a href="https://markdown-it.github.io/" target="_blank" rel="noopener">这里</a>，尤其是后一个网页给出了很详细的例子。</p>
+<p>如果你觉得脚注字体偏大，可以看我的<a href="/20200718-hexo-next-font-settings/" title="Hexo NexT主题的字体更换">Hexo NexT主题的字体更换</a>，看完后就知道怎么修改了。我个人做了如下设置：</p>
+<figure class="highlight stylus"><figcaption><span>source/_data/styles.styl</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.footnotes</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">75%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为我们引入了新的插件，所以也要改一下工作流文件，在<code>安装Hexo</code>那一步加一些步骤，安装这些依赖。你可以在本地修改<code>.github/workflows/main.yml</code>的内容，也可以在GitHub的<code>blog</code>仓库，点击Actions，选择最近的一次部署，点击右侧的省略号中的View workflow file，然后点击右侧的铅笔按钮进行修改。将新的依赖安装写在<code>npm install</code>那一行后面即可。如果你采用后者，在你将本地新的改动push到GitHub之前，要记得先做<code>git pull</code>，否则会报错显示远程仓库有新的改动。推荐在本地修改，一步到位。</p>
+<figure class="highlight diff"><figcaption><span>.github/workflows/main.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">run: |</span><br><span class="line">  npm install hexo-cli -g</span><br><span class="line">  npm install</span><br><span class="line"><span class="addition">+ npm uninstall hexo-renderer-marked</span></span><br><span class="line"><span class="addition">+ npm install hexo-renderer-markdown-it</span></span><br></pre></td></tr></table></figure>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>推荐源代码编辑器，因为普通的文本编辑器可能会对某些字符做转换，也不能识别语言与语法高亮。我个人使用Atom、Brackets、Sublime Text这三款。 <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/20200718-hexo-blog-guide-3/" rel="bookmark">Hexo静态博客指南：本站是如何诞生的（下）</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/20200718-hexo-next-font-settings/" rel="bookmark">Hexo NexT主题的字体更换</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/20200719-hexo-next-new-features/" rel="bookmark">Hexo NexT更多功能设置</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/20200726-hexo-blog-toggles/" rel="bookmark">Hexo静态博客添加可折叠内容</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/20200716-hexo-blog-guide-2/" rel="bookmark">Hexo静态博客指南：本站是如何诞生的（中）</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>bambrow
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://bambrow.com/20200715-hexo-blog-guide-1/" title="Hexo静态博客指南：本站是如何诞生的（上）">https://bambrow.com/20200715-hexo-blog-guide-1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+              <a href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag"># 博客</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/20200716-hexo-blog-guide-2/" rel="next" title="Hexo静态博客指南：本站是如何诞生的（中）">
+      Hexo静态博客指南：本站是如何诞生的（中） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bambrow</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">24k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"5pmeh1BBaYp2iKvcRjQk5blC-MdYXbMMI","appKey":"YhU5j2i4wrxP4fP7g6AeplbD","placeholder":"随便写点什么吧！","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":null,"visitor":true,"comment_count":true,"recordIP":false,"serverURLs":null}
+    ));
+  }, window.Valine);
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+
+
+<script type="text/javascript" src="/js/fold_action.js"></script>
+
+</body>
+</html>

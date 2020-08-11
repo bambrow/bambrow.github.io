@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.png" color="#222">
+  <link rel="manifest" href="/images/site.webmanifest">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <meta name="google-site-verification" content="AziEKmwN1dn5YyfMDxzwqHobIACkcSuqgTgbVYBeuhg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Sans SC:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"bambrow.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.4","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文详细记录一下本站的建立过程，以便查阅。对于具体的细节则不会做过多解释，主要展示步骤。这一篇主要讲述更换NexT主题以及后续维护的相关内容。 本文运行环境： 1234npm: 6.14.7hexo: 4.2.1hexo-cli: 3.1.0NexT: 8.0.0-rc.4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo静态博客指南：本站是如何诞生的（中）">
+<meta property="og:url" content="https://bambrow.com/20200716-hexo-blog-guide-2/index.html">
+<meta property="og:site_name" content="Bambrow&#39;s Blog">
+<meta property="og:description" content="本文详细记录一下本站的建立过程，以便查阅。对于具体的细节则不会做过多解释，主要展示步骤。这一篇主要讲述更换NexT主题以及后续维护的相关内容。 本文运行环境： 1234npm: 6.14.7hexo: 4.2.1hexo-cli: 3.1.0NexT: 8.0.0-rc.4">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-17T00:00:49.000Z">
+<meta property="article:modified_time" content="2020-08-11T02:07:10.609Z">
+<meta property="article:author" content="bambrow">
+<meta property="article:tag" content="技术">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="博客">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://bambrow.com/20200716-hexo-blog-guide-2/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Hexo静态博客指南：本站是如何诞生的（中） | Bambrow's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-173014076-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-173014076-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?0c836373b8ebbef198966adf9f3fd5a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Bambrow's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Half as much, twice as elegant.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-notes">
+
+    <a href="/notes/" rel="section"><i class="fa fa-sticky-note fa-fw"></i>笔记</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#更换主题"><span class="nav-number">1.</span> <span class="nav-text">更换主题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装NexT"><span class="nav-number">1.1.</span> <span class="nav-text">安装NexT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置git-submodule"><span class="nav-number">1.2.</span> <span class="nav-text">设置git submodule</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改主题配置"><span class="nav-number">2.</span> <span class="nav-text">修改主题配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主题样式与暗色模式"><span class="nav-number">2.1.</span> <span class="nav-text">主题样式与暗色模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#菜单与侧边栏项目"><span class="nav-number">2.2.</span> <span class="nav-text">菜单与侧边栏项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网站图标与头像"><span class="nav-number">2.3.</span> <span class="nav-text">网站图标与头像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#知识共享许可协议设置"><span class="nav-number">2.4.</span> <span class="nav-text">知识共享许可协议设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码块样式"><span class="nav-number">2.5.</span> <span class="nav-text">代码块样式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阅读进度、书签与GitHub横幅"><span class="nav-number">2.6.</span> <span class="nav-text">阅读进度、书签与GitHub横幅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字体设置"><span class="nav-number">2.7.</span> <span class="nav-text">字体设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置中英文自动空格"><span class="nav-number">2.8.</span> <span class="nav-text">设置中英文自动空格</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#增加第三方服务"><span class="nav-number">3.</span> <span class="nav-text">增加第三方服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LeanCloud阅读统计功能"><span class="nav-number">3.1.</span> <span class="nav-text">LeanCloud阅读统计功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Valine评论系统"><span class="nav-number">3.2.</span> <span class="nav-text">Valine评论系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不蒜子网页计数器功能"><span class="nav-number">3.3.</span> <span class="nav-text">不蒜子网页计数器功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Local-Search搜索功能"><span class="nav-number">3.4.</span> <span class="nav-text">Local Search搜索功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Word-Counter字数统计与阅读时长功能"><span class="nav-number">3.5.</span> <span class="nav-text">Word Counter字数统计与阅读时长功能</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">bambrow</p>
+  <div class="site-description" itemprop="description">Bambrow's blog about everything.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/bambrow" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;bambrow" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:bambrow@foxmail.com" title="E-Mail → mailto:bambrow@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </section>
+        <div class="back-to-top animated">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://bambrow.com/20200716-hexo-blog-guide-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="bambrow">
+      <meta itemprop="description" content="Bambrow's blog about everything.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bambrow's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hexo静态博客指南：本站是如何诞生的（中）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-16 20:00:49" itemprop="dateCreated datePublished" datetime="2020-07-16T20:00:49-04:00">2020-07-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-10 22:07:10" itemprop="dateModified" datetime="2020-08-10T22:07:10-04:00">2020-08-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/20200716-hexo-blog-guide-2/" class="post-meta-item leancloud_visitors" data-flag-title="Hexo静态博客指南：本站是如何诞生的（中）" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/20200716-hexo-blog-guide-2/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/20200716-hexo-blog-guide-2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+    </span>
+    <span class="post-meta-item-text">
+        繁/简：
+    </span>
+    <a id="translateLink" href="javascript:translatePage();">
+        <span class="translate-style">
+            繁
+        </span>
+    </a>
+</span>
+<script type="text/javascript" src="/js/tw_cn.js"></script>
+<script type="text/javascript">
+    var defaultEncoding = 2; //网站编写字体是否繁体，1-繁体，2-简体
+    var translateDelay = 0; //延迟时间,若不在前, 要设定延迟翻译时间, 如100表示100ms,默认为0
+    var cookieDomain = "https://bambrow.com/"; //Cookie地址, 一定要设定, 通常为你的网址
+    var msgToTraditionalChinese = "繁"; //此处可以更改为你想要显示的文字
+    var msgToSimplifiedChinese = "简"; //同上，但两处均不建议更改
+    var translateButtonId = "translateLink"; //默认互换id
+    translateInitilization();
+</script>
+
+<br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文详细记录一下本站的建立过程，以便查阅。对于具体的细节则不会做过多解释，主要展示步骤。这一篇主要讲述更换<code>NexT</code>主题以及后续维护的相关内容。</p>
+<p>本文运行环境：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm: 6.14.7</span><br><span class="line">hexo: 4.2.1</span><br><span class="line">hexo-cli: 3.1.0</span><br><span class="line">NexT: 8.0.0-rc.4</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="更换主题"><a class="header-anchor" href="#更换主题">¶</a>更换主题</h2>
+<p>我们这里选择的是<code>NexT</code>主题。<code>Hexo</code>支持许多主题，你也可以选择自己喜欢的主题。</p>
+<h3 id="安装NexT"><a class="header-anchor" href="#安装NexT">¶</a>安装<code>NexT</code></h3>
+<p><code>NexT</code>是非常流行的<code>Hexo</code>主题。根据<a href="https://theme-next.org/" target="_blank" rel="noopener">这个网站</a>，该项目几经易手，经历过很多不同的版本。我们现在当然是采用目前的最新版本。</p>
+<p>首先我们运行<code>hexo -v</code>与<code>npm -v</code>查看一下<code>Hexo</code>与<code>Node.js</code>的版本，确保它们大于<a href="https://github.com/next-theme/hexo-theme-next#readme" target="_blank" rel="noopener">这个链接</a>里所示的版本最低要求。</p>
+<p>以下步骤主要参考了<a href="https://theme-next.js.org/docs/getting-started/" target="_blank" rel="noopener"><code>NexT</code>官方文档</a>。还是在博客的根目录里，运行如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/next-theme/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+<p>等待运行完毕，新主题就下载好了。这里需要区分的是，我们现在有了两个名为<code>_config.yml</code>的文件。一个是根目录下的<code>_config.yml</code>，这代表着站点的配置文件；还有一个是<code>themes/next/_config.yml</code>，这代表着这个主题的配置文件。要注意区分它们。</p>
+<p>下一步，我们打开站点配置文件<code>_config.yml</code>，找到<code>theme</code>那一行并改为<code>theme: next</code>，主题就更换完毕了。你可以运行<code>hexo clean; hexo g; hexo s</code>来查看效果。</p>
+<h3 id="设置git-submodule"><a class="header-anchor" href="#设置git-submodule">¶</a>设置<code>git submodule</code></h3>
+<p>如果此时你尝试使用<code>git add .</code>，你会发现会有如下的warning：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">warning: adding embedded git repository: themes&#x2F;next</span><br><span class="line">hint: You&#39;ve added another git repository inside your current repository.</span><br><span class="line">hint: Clones of the outer repository will not contain the contents of</span><br><span class="line">hint: the embedded repository and will not know how to obtain it.</span><br><span class="line">hint: If you meant to add a submodule, use:</span><br><span class="line">hint:</span><br><span class="line">hint: 	git submodule add &lt;url&gt; themes&#x2F;next</span><br><span class="line">hint:</span><br><span class="line">hint: If you added this path by mistake, you can remove it from the</span><br><span class="line">hint: index with:</span><br><span class="line">hint:</span><br><span class="line">hint: 	git rm --cached themes&#x2F;next</span><br><span class="line">hint:</span><br><span class="line">hint: See &quot;git help submodule&quot; for more information.</span><br></pre></td></tr></table></figure>
+<p>这是因为<code>themes/next</code>文件夹来源于另外的<code>git</code>项目，因此无法上传。在这里有许多解决办法，其中一个办法是删除<code>themes/next</code>里的<code>.git</code>文件夹。这并不是一个好办法，因为这样的话就无法再通过<code>git pull</code>更新<code>themes/next</code>模块。因此，比较好的办法是设置<code>git submodule</code>。</p>
+<p>注意，使用本文的办法后，将不再推荐修改<code>themes/next/_config.yml</code>文件。因为修改该文件可能在更新主题时会造成本地修改与远程更新的冲突。当然，这也可以通过<code>git stash</code>、<code>git pull</code>、<code>git stash pop</code>然后修复conflicts来解决，但总归是比较麻烦。如果你需要深度定制该主题，建议fork一份改主题源代码到自己的GitHub上，然后将自己fork后的仓库作为<code>submodule</code>。具体的做法可以参考网上的其他教程。这里假设你不会再修改<code>themes/next/_config.yml</code>文件（放心，还有其他方法可以更改主题设置）。</p>
+<p>在添加<code>submodule</code>之前先做一点准备工作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git rm -r --cached themes/next</span><br></pre></td></tr></table></figure>
+<p>然后运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule add https://github.com/next-theme/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+<p>这会在你的根目录下添加<code>.gitmodules</code>文件，内容如下：</p>
+<figure class="highlight plain"><figcaption><span>.gitmodules</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[submodule &quot;themes&#x2F;next&quot;]</span><br><span class="line">	path &#x3D; themes&#x2F;next</span><br><span class="line">	url &#x3D; https:&#x2F;&#x2F;github.com&#x2F;next-theme&#x2F;hexo-theme-next</span><br></pre></td></tr></table></figure>
+<p>在这之后，如果你想更新<code>NexT</code>主题的代码，可以使用<code>git submodule update --remote</code>命令。你也可以进入<code>themes/next</code>文件夹使用<code>git pull</code>。</p>
+<p>让我们提交这一次修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"change theme"</span></span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<h2 id="修改主题配置"><a class="header-anchor" href="#修改主题配置">¶</a>修改主题配置</h2>
+<p>前文推荐不要修改<code>themes/next/_config.yml</code>文件。我们想要自定义一些配置，该怎么做呢？官方教程给出了<a href="https://theme-next.js.org/docs/getting-started/configuration.html" target="_blank" rel="noopener">答案</a>。</p>
+<p>在这里，有两种修改方式，一种是Hexo-Way，也就是把所有设置都放在根目录的<code>_config.yml</code>里。还有一种是NexT-Way，也就是把主题设置放在<code>source/_data/next.yml</code>里。这里我们选择后者。</p>
+<p>我们新建文件夹并复制文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p <span class="built_in">source</span>/_data</span><br><span class="line">cp themes/next/_config.yml <span class="built_in">source</span>/_data/next.yml</span><br></pre></td></tr></table></figure>
+<p>随后，你就可以修改<code>source/_data/next.yml</code>里的内容了。这里讲几个主要的配置。</p>
+<h3 id="主题样式与暗色模式"><a class="header-anchor" href="#主题样式与暗色模式">¶</a>主题样式与暗色模式</h3>
+<p>主题样式在<code># Schemes</code>下面。一共有四种样式，分别是Muse，Mist，Pisces和Gemini。其中前两种是单栏样式，后两种是双栏样式，如果要更改，只需注释掉当前样式，再取消注释想要更改的样式即可。</p>
+<p>在下方的Dark Mode选项里，你可以选择为网页开启暗色模式，只需要把<code>false</code>变成<code>true</code>即可。</p>
+<h3 id="菜单与侧边栏项目"><a class="header-anchor" href="#菜单与侧边栏项目">¶</a>菜单与侧边栏项目</h3>
+<p>在<code># Menu Settings</code>下面你可以选择开启菜单项目。它们都是默认关闭（被注释掉）的。需要哪一项，取消注释即可。</p>
+<p>注意，除了<code>home</code>与<code>archives</code>，其他的页面需要手动添加。比如，你想要开启<code>about</code>页面，那么就要在<code>Hexo</code>根目录下运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page <span class="string">"about"</span></span><br></pre></td></tr></table></figure>
+<p>随后在<code>source</code>文件夹下面就会生成<code>about</code>目录，里面有<code>index.md</code>文件。你可以更改文件内的标题，随后在<code>date</code>行下面加一句：</p>
+<figure class="highlight diff"><figcaption><span>source/about/index.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="addition">+ type: "about"</span></span><br></pre></td></tr></table></figure>
+<p>如果需要还可以加上<code>comments: false</code>来为这个页面关闭评论（后文会讲到如何添加评论功能）。</p>
+<p>就大功告成了。你可以随意编辑这个页面。你也可以自定义菜单项目，甚至可以嵌套项目，具体做法可以查看<a href="https://theme-next.js.org/docs/getting-started/#Configuring-Menu-Items" target="_blank" rel="noopener">官方教程</a>。</p>
+<p>这里举个简单的例子，假如我们要新建一个菜单项目叫做<code>notes</code>，首先在<code># Menu Settings</code>的<code>menu</code>下面新建一行：</p>
+<figure class="highlight diff"><figcaption><span>source/_data/next.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">menu:</span><br><span class="line">  home: / || fa fa-home</span><br><span class="line">  about: /about/ || fa fa-user</span><br><span class="line">  tags: /tags/ || fa fa-tags</span><br><span class="line">  categories: /categories/ || fa fa-th</span><br><span class="line">  archives: /archives/ || fa fa-archive</span><br><span class="line">  #schedule: /schedule/ || fa fa-calendar</span><br><span class="line">  #sitemap: /sitemap.xml || fa fa-sitemap</span><br><span class="line">  #commonweal: /404/ || fa fa-heartbeat</span><br><span class="line"><span class="addition">+ notes: /notes/ || fa fa-sticky-note</span></span><br></pre></td></tr></table></figure>
+<p>图标的代码可以去<a href="https://fontawesome.com/" target="_blank" rel="noopener">Font Awesome</a>网页上查找。随后如前面的例子，手动添加页面即可。如要添加自定义菜单的中文翻译，需要新建<code>source/_data/languages.yml</code>文件，然后写入如下内容：</p>
+<figure class="highlight yaml"><figcaption><span>source/_data/languages.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">zh-CN:</span></span><br><span class="line">  <span class="attr">menu:</span></span><br><span class="line">    <span class="attr">notes:</span> <span class="string">笔记</span></span><br></pre></td></tr></table></figure>
+<p>任何翻译都可以在这个文件里设置或覆盖。</p>
+<p>此外，在<code># Sidebar Settings</code>下面可以找到关于侧边栏的一些设置。除了它本身的一些参数，你还可以设置其中的一些内容，比如<code>social</code>下面可以开启你的社交网络账号与主页。另外，搜索<code>back2top</code>还可以让你把回到首页的按钮放在侧边栏，并开启阅读进度百分比功能。</p>
+<h3 id="网站图标与头像"><a class="header-anchor" href="#网站图标与头像">¶</a>网站图标与头像</h3>
+<p>网站图标可以在<code># Site Information Settings</code>的<code>favicon</code>下面找到。默认读取的图标位于<code>themes/next/source/images/</code>下面。我们当然不应该修改<code>themes/next</code>里面的内容，因此如果要更换，可以把图标放在<code>source/images/</code>目录里（如果没有这个目录就自己新建）。教程还推荐了<a href="https://realfavicongenerator.net/" target="_blank" rel="noopener">这个网站</a>来生成你自己的图标。</p>
+<p>头像则在侧边栏设置的<code># Sidebar Avatar</code>下面。你可以把头像放在<code>source/uploads/</code>目录里（如果没有这个目录就自己新建）。</p>
+<h3 id="知识共享许可协议设置"><a class="header-anchor" href="#知识共享许可协议设置">¶</a>知识共享许可协议设置</h3>
+<p>Creative Commons设置可以搜索<code>creative_commons</code>。它支持多种协议，默认是<code>by-nc-sa</code>。更多协议可以参考<a href="https://zh.wikipedia.org/wiki/%E7%9F%A5%E8%AF%86%E5%85%B1%E4%BA%AB%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">维基百科的解释</a>。</p>
+<h3 id="代码块样式"><a class="header-anchor" href="#代码块样式">¶</a>代码块样式</h3>
+<p>你可以在<a href="https://theme-next.js.org/highlight/" target="_blank" rel="noopener">这里</a>查看并选择你喜欢的样式，随后搜索<code>codeblock</code>修改。你还可以打开复制按钮，方便读者复制代码块里的内容。</p>
+<h3 id="阅读进度、书签与GitHub横幅"><a class="header-anchor" href="#阅读进度、书签与GitHub横幅">¶</a>阅读进度、书签与GitHub横幅</h3>
+<p>搜索<code>reading_progress</code>即可开启阅读进度功能。还可以在<code>bookmark</code>开启书签功能，读者可以选择点击书签图标来保存阅读进度，下次进入这篇文章时就可以继续阅读。</p>
+<p>下面的<code>github_banner</code>可以让你开启GitHub横幅，它会在网页右上角显示一个小横幅，直通你的GitHub主页。</p>
+<h3 id="字体设置"><a class="header-anchor" href="#字体设置">¶</a>字体设置</h3>
+<p>在<code># Font Settings</code>可以更改字体设置，<code>NexT</code>允许你更改全局字体、网站标题字体、<code>h1-h6</code>标题字体，文章字体与代码字体。如果你的定制程度比较高，还是参看<a href="https://theme-next.js.org/docs/theme-settings/#Fonts-Customization" target="_blank" rel="noopener">官方教程</a>比较好。</p>
+<h3 id="设置中英文自动空格"><a class="header-anchor" href="#设置中英文自动空格">¶</a>设置中英文自动空格</h3>
+<p>这个功能已经内置在NexT主题中。在<code>source/_data/next.yml</code>中搜索并开启<code>pangu</code>即可。</p>
+<h2 id="增加第三方服务"><a class="header-anchor" href="#增加第三方服务">¶</a>增加第三方服务</h2>
+<p>同样，<a href="https://theme-next.js.org/docs/third-party-services/" target="_blank" rel="noopener">官方教程</a>还是比较详细的，解释了很多第三方插件的用法，囊括了数学公式、评论系统、网站统计与分析、评分与分享小部件、搜索功能、即时聊天室等等。这里只讲一下我个人开启的服务。</p>
+<h3 id="LeanCloud阅读统计功能"><a class="header-anchor" href="#LeanCloud阅读统计功能">¶</a>LeanCloud阅读统计功能</h3>
+<p>这部分参考了<a href="https://github.com/theme-next/hexo-theme-next/blob/master/docs/zh-CN/LEANCLOUD-COUNTER-SECURITY.md" target="_blank" rel="noopener">这篇文章</a>。</p>
+<p>注册LeanCloud时，建议注册<a href="https://leancloud.app/" target="_blank" rel="noopener">国际版</a>，<a href="https://www.leancloud.cn/" target="_blank" rel="noopener">国内版</a>要验证的东西比较多。然后新建一个应用，名字可以任意写。随后打开应用，点击存储条目下的结构化数据，然后点击创建Class，名称为Counter，其他保持默认。随后去设置里的<code>应用Keys</code>记下<code>AppID</code>与<code>AppKey</code>。</p>
+<p>打开<code>source/_data/next.yml</code>，搜索<code>leancloud_visitors</code>，将其打开，填写刚才的<code>AppID</code>与<code>AppKey</code>，<code>security</code>也设置为打开。随后的步骤比较多且复杂，请参考上面的文章，但是介于现在LeanCloud又有更新，所以做一点补充说明。</p>
+<p>首先，上面的参考文章里，需要打开NexT主题配置文件的时候，我们统一打开<br>
+<code>source/_data/next.yml</code>。要时刻记住NexT主题的目录不要修改。</p>
+<p>其次，在博客配置文件<code>_config.yml</code>里，在<code>theme:next</code>后面（你也可以添加到别的位置）添加的内容是：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">leancloud_counter_security:</span></span><br><span class="line">  <span class="attr">enable_sync:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">app_id:</span> <span class="string">你的AppID</span></span><br><span class="line">  <span class="attr">app_key:</span> <span class="string">你的AppKey</span></span><br><span class="line">  <span class="attr">username:</span> <span class="string">你用"hexo</span> <span class="string">lc-counter</span> <span class="string">register"注册的用户名</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">你用"hexo</span> <span class="string">lc-counter</span> <span class="string">register"注册的密码</span></span><br></pre></td></tr></table></figure>
+<p>记得在这之前要安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-leancloud-counter-security</span><br></pre></td></tr></table></figure>
+<p>然后，在配置<code>deploy</code>的时候，因为我们多加了一项，所以应该改为：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="string">你的GitHub目录地址</span></span><br><span class="line">    <span class="attr">branch:</span> <span class="string">master</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">leancloud_counter_security_sync</span></span><br></pre></td></tr></table></figure>
+<p>也就是每一个<code>type</code>前面都要加上<code>-</code>。</p>
+<p>随后，在设置Counter的权限时，我们在<code>add_field</code>与<code>create</code>均选择指定用户，随后在用户名里输入你用<code>hexo lc-counter register</code>注册的用户名，它会自动找到对应的用户。在设置完后，两项都应该显示<code>0 Role, 1 User</code>。对于<code>delete</code>，选择指定用户留空即可，会显示显示<code>0 Role, 0 User</code>。</p>
+<h3 id="Valine评论系统"><a class="header-anchor" href="#Valine评论系统">¶</a>Valine评论系统</h3>
+<p>在前一步的基础上，在<code>source/_data/next.yml</code>找到<code># Valine</code>，将其打开，并且填写<code>appId</code>与<code>appKey</code>。在这里，我们把<code>visitor</code>设置为<code>true</code>，随后把上一步的<code>leancloud_visitors</code>下的<code>enable</code>设置为<code>false</code>，因为两者之间有冲突。</p>
+<h3 id="不蒜子网页计数器功能"><a class="header-anchor" href="#不蒜子网页计数器功能">¶</a>不蒜子网页计数器功能</h3>
+<p>这个功能可以显示网站的浏览量和访客数。在<code>source/_data/next.yml</code>里找到<code>busuanzi_count</code>，将其打开，因为我们已经开启了LeanCloud的计数功能，所以将<code>post_views</code>关掉（否则文章内部的阅读次数会有异常），其他保持打开即可。</p>
+<p>如果在本地测试，你会发现统计数据非常大，这是因为不蒜子通过域名统计，所以<code>localhost:4000</code>的数字会比较大，不必担心。</p>
+<h3 id="Local-Search搜索功能"><a class="header-anchor" href="#Local-Search搜索功能">¶</a>Local Search搜索功能</h3>
+<p>首先在根目录安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-generator-searchdb</span><br></pre></td></tr></table></figure>
+<p>随后，在博客配置文件<code>_config.yml</code>里加入：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">search:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">search.xml</span></span><br><span class="line">  <span class="attr">field:</span> <span class="string">post</span></span><br><span class="line">  <span class="attr">format:</span> <span class="string">html</span></span><br><span class="line">  <span class="attr">limit:</span> <span class="number">10000</span></span><br></pre></td></tr></table></figure>
+<p>然后在<code>source/_data/next.yml</code>里打开<code>local_search</code>。</p>
+<h3 id="Word-Counter字数统计与阅读时长功能"><a class="header-anchor" href="#Word-Counter字数统计与阅读时长功能">¶</a>Word Counter字数统计与阅读时长功能</h3>
+<p>首先在根目录安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-word-counter</span><br></pre></td></tr></table></figure>
+<p>随后，在博客配置文件<code>_config.yml</code>里加入：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">symbols_count_time:</span></span><br><span class="line">  <span class="attr">symbols:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">time:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">total_symbols:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">total_time:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">exclude_codeblock:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">awl:</span> <span class="number">4</span></span><br><span class="line">  <span class="attr">wpm:</span> <span class="number">275</span></span><br><span class="line">  <span class="attr">suffix:</span> <span class="string">"mins."</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是，如果插件需要安装新的包，而你像我一样设置了自动部署，那么你可能需要更新一下你的工作流，在<code>安装Hexo</code>那一步加一些步骤，安装这些依赖。修改<code>.github/workflows/main.yml</code>的内容，将新的依赖安装写在<code>npm install</code>那一行后面即可。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/20200718-hexo-blog-guide-3/" rel="bookmark">Hexo静态博客指南：本站是如何诞生的（下）</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/20200718-hexo-next-font-settings/" rel="bookmark">Hexo NexT主题的字体更换</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/20200719-hexo-next-new-features/" rel="bookmark">Hexo NexT更多功能设置</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/20200726-hexo-blog-toggles/" rel="bookmark">Hexo静态博客添加可折叠内容</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/20200715-hexo-blog-guide-1/" rel="bookmark">Hexo静态博客指南：本站是如何诞生的（上）</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>bambrow
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://bambrow.com/20200716-hexo-blog-guide-2/" title="Hexo静态博客指南：本站是如何诞生的（中）">https://bambrow.com/20200716-hexo-blog-guide-2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+              <a href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag"># 博客</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/20200715-hexo-blog-guide-1/" rel="prev" title="Hexo静态博客指南：本站是如何诞生的（上）">
+      <i class="fa fa-chevron-left"></i> Hexo静态博客指南：本站是如何诞生的（上）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/20200718-hexo-blog-guide-3/" rel="next" title="Hexo静态博客指南：本站是如何诞生的（下）">
+      Hexo静态博客指南：本站是如何诞生的（下） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bambrow</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">24k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"5pmeh1BBaYp2iKvcRjQk5blC-MdYXbMMI","appKey":"YhU5j2i4wrxP4fP7g6AeplbD","placeholder":"随便写点什么吧！","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":null,"visitor":true,"comment_count":true,"recordIP":false,"serverURLs":null}
+    ));
+  }, window.Valine);
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+
+
+<script type="text/javascript" src="/js/fold_action.js"></script>
+
+</body>
+</html>
